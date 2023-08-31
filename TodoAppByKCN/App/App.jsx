@@ -1,6 +1,5 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {
-  Button,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -11,34 +10,25 @@ import {
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import BottomSheet from './Components/BottomSheet';
-import CreateModalComponent from './Components/CreateModalComponent';
 import FAB from './Components/FAB';
+import CreateComponent from './Components/CreateComponent';
 import TodoItem from './Components/TodoItem';
 import {todoInitList} from './Constants/Constants';
 
 function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [todoList, setTodoList] = useState(todoInitList);
+
+  // Since BottomSheet is not removed from the screen once it is placed,
+  //  we need to use a state variable to send the signal for Create TODO
+  //  component to set the focus to 'Name' TextInput, on each open action
+  //  of the BottomSheet.
+  const [shouldRender, setShouldRender] = useState(true);
 
   const bottomSheetRef = useRef(null);
 
   const {height} = useWindowDimensions();
 
   const renderTodoList = useCallback(TODOList => TODOList.map(TodoItem), []);
-
-  const onCloseCBCached = useCallback(() => {
-    console.log('Close Called');
-    // setIsModalOpen(false);
-
-    closeBottomSheetHandler();
-  }, []);
-
-  const onOpenCBCached = useCallback(() => {
-    console.log('Open Called');
-    // setIsModalOpen(true);
-
-    openBottomSheetHandler();
-  }, []);
 
   const addNewTodoCB = useCallback(
     newTodo => {
@@ -49,10 +39,12 @@ function App() {
 
   const openBottomSheetHandler = useCallback(() => {
     bottomSheetRef.current.expandBottomSheet();
+    setShouldRender(true);
   }, []);
 
   const closeBottomSheetHandler = useCallback(() => {
     bottomSheetRef.current.closeBottomSheet();
+    setShouldRender(false);
   }, []);
 
   return (
@@ -60,8 +52,6 @@ function App() {
       <SafeAreaView style={styles.rootContainerStyle}>
         <ScrollView style={styles.mainViewStyle}>
           <View style={styles.todoListContainerStyle}>
-            <Button onPress={onCloseCBCached} title={'Close'} />
-
             {todoList.length ? (
               renderTodoList(todoList)
             ) : (
@@ -71,22 +61,17 @@ function App() {
             )}
           </View>
         </ScrollView>
-        {isModalOpen && (
-          <CreateModalComponent
-            onSuccessCB={addNewTodoCB}
-            isModalOpen={isModalOpen}
-            onDismissCB={onCloseCBCached}
-            transparentModal
-          />
-        )}
-        <FAB onOpenCB={onOpenCBCached} />
+        <FAB onOpenCB={openBottomSheetHandler} />
         <BottomSheet
-          contentBG={'#ccc'}
-          activeHeight={height * 0.8}
+          activeHeight={height * 0.8} // TODO: Set this value via an Enum.
+          backdropColor={'black'}
+          bottomSheetBGColor={'#ccc'}
           ref={bottomSheetRef}>
-          <Text style={{color: 'black', backgroundColor: '#888888'}}>
-            Bottomsheet content
-          </Text>
+          <CreateComponent
+            forceRender={shouldRender}
+            onSuccessCB={addNewTodoCB}
+            onDismissCB={closeBottomSheetHandler}
+          />
         </BottomSheet>
       </SafeAreaView>
     </GestureHandlerRootView>
