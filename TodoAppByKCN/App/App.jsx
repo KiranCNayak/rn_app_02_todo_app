@@ -1,6 +1,16 @@
-import React, {useCallback, useState} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {useCallback, useRef, useState} from 'react';
+import {
+  Button,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
+import BottomSheet from './Components/BottomSheet';
 import CreateModalComponent from './Components/CreateModalComponent';
 import FAB from './Components/FAB';
 import TodoItem from './Components/TodoItem';
@@ -10,16 +20,24 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [todoList, setTodoList] = useState(todoInitList);
 
+  const bottomSheetRef = useRef(null);
+
+  const {height} = useWindowDimensions();
+
   const renderTodoList = useCallback(TODOList => TODOList.map(TodoItem), []);
 
   const onCloseCBCached = useCallback(() => {
     console.log('Close Called');
-    setIsModalOpen(false);
+    // setIsModalOpen(false);
+
+    closeBottomSheetHandler();
   }, []);
 
   const onOpenCBCached = useCallback(() => {
     console.log('Open Called');
-    setIsModalOpen(true);
+    // setIsModalOpen(true);
+
+    openBottomSheetHandler();
   }, []);
 
   const addNewTodoCB = useCallback(
@@ -29,29 +47,49 @@ function App() {
     [todoList],
   );
 
+  const openBottomSheetHandler = useCallback(() => {
+    bottomSheetRef.current.expandBottomSheet();
+  }, []);
+
+  const closeBottomSheetHandler = useCallback(() => {
+    bottomSheetRef.current.closeBottomSheet();
+  }, []);
+
   return (
-    <SafeAreaView style={styles.safeAreaViewStyle}>
-      <ScrollView style={styles.mainViewStyle}>
-        <View style={styles.todoListContainerStyle}>
-          {todoList.length ? (
-            renderTodoList(todoList)
-          ) : (
-            <Text style={styles.emptyTextStyle}>
-              {'Empty List here!\nAdd new Todos from the button below'}
-            </Text>
-          )}
-        </View>
-      </ScrollView>
-      {isModalOpen && (
-        <CreateModalComponent
-          onSuccessCB={addNewTodoCB}
-          isModalOpen={isModalOpen}
-          onDismissCB={onCloseCBCached}
-          transparentModal
-        />
-      )}
-      <FAB onOpenCB={onOpenCBCached} />
-    </SafeAreaView>
+    <GestureHandlerRootView style={styles.rootContainerStyle}>
+      <SafeAreaView style={styles.rootContainerStyle}>
+        <ScrollView style={styles.mainViewStyle}>
+          <View style={styles.todoListContainerStyle}>
+            <Button onPress={onCloseCBCached} title={'Close'} />
+
+            {todoList.length ? (
+              renderTodoList(todoList)
+            ) : (
+              <Text style={styles.emptyTextStyle}>
+                {'Empty List here!\nAdd new Todos from the button below'}
+              </Text>
+            )}
+          </View>
+        </ScrollView>
+        {isModalOpen && (
+          <CreateModalComponent
+            onSuccessCB={addNewTodoCB}
+            isModalOpen={isModalOpen}
+            onDismissCB={onCloseCBCached}
+            transparentModal
+          />
+        )}
+        <FAB onOpenCB={onOpenCBCached} />
+        <BottomSheet
+          contentBG={'#ccc'}
+          activeHeight={height * 0.8}
+          ref={bottomSheetRef}>
+          <Text style={{color: 'black', backgroundColor: '#888888'}}>
+            Bottomsheet content
+          </Text>
+        </BottomSheet>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
 
@@ -61,7 +99,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#212121',
     flex: 1,
   },
-  safeAreaViewStyle: {
+  rootContainerStyle: {
     flex: 1,
   },
   todoListContainerStyle: {
