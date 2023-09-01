@@ -4,18 +4,26 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
   useWindowDimensions,
 } from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
-import BottomSheet from './Components/BottomSheet';
-import FAB from './Components/FAB';
-import CreateComponent from './Components/CreateComponent';
-import TodoItem from './Components/TodoItem';
-import {todoInitList} from './Constants/Constants';
+import BottomSheet from '../Components/BottomSheet';
+import FAB from '../Components/FAB';
+import CreateComponent from '../Components/CreateComponent';
+import TodoItem from '../Components/TodoItem';
+import {todoInitList} from '../Constants/Constants';
+import {push} from '../Utils/NavigationUtils';
+import {
+  ANIMATION_TYPE,
+  NAVIGATION_OPTIONS,
+  NAV_STYLES,
+  SCREEN_NAMES,
+} from '../Utils/NavigationUtils/NAV_CONSTANTS';
 
-function App() {
+function HomePageView(props) {
   const [todoList, setTodoList] = useState(todoInitList);
 
   // Since BottomSheet is not removed from the screen once it is placed,
@@ -47,9 +55,25 @@ function App() {
     setShouldRender(false);
   }, []);
 
+  // TODO: Remove this method as well
+  const pushScreenToRandomPage = () => {
+    push(
+      props.componentId,
+      SCREEN_NAMES.randomPage,
+      NAVIGATION_OPTIONS(NAV_STYLES.dark, 'Random Page Title', true, false),
+      {},
+    );
+  };
+
   return (
     <GestureHandlerRootView style={styles.rootContainerStyle}>
       <SafeAreaView style={styles.rootContainerStyle}>
+        {/* TODO: Remove the TouchableOpacity below. It's just to see if navigation works as expected */}
+        <TouchableOpacity
+          style={{height: 50, alignItems: 'center', justifyContent: 'center'}}
+          onPress={pushScreenToRandomPage}>
+          <Text>Go to Random Page</Text>
+        </TouchableOpacity>
         <ScrollView style={styles.mainViewStyle}>
           <View style={styles.todoListContainerStyle}>
             {todoList.length ? (
@@ -92,4 +116,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default HomePageView;
