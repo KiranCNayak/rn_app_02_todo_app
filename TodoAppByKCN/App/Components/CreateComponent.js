@@ -7,10 +7,13 @@ import {
   View,
 } from 'react-native';
 
+import ColorPicker from './ColorPicker';
+
 const CreateComponent = ({forceRender, onDismissCB, onSuccessCB}) => {
   const todoDescRef = useRef(null);
   const todoNameRef = useRef(null);
 
+  const [selectedColor, setSelectedColor] = useState(null);
   const [todoDescText, setTodoDescText] = useState('');
   const [todoNameText, setTodoNameText] = useState('');
 
@@ -28,6 +31,10 @@ const CreateComponent = ({forceRender, onDismissCB, onSuccessCB}) => {
     todoNameRef.current.focus();
   };
 
+  const onColorItemPress = color => {
+    setSelectedColor(color);
+  };
+
   const onDescTextChange = value => {
     setTodoDescText(value);
   };
@@ -41,6 +48,7 @@ const CreateComponent = ({forceRender, onDismissCB, onSuccessCB}) => {
       id: `${Date.now()}`,
       name: todoNameText,
       description: todoDescText,
+      color: selectedColor ? selectedColor : '#333333', // Fallback color
     };
     onSuccessCB(newTodo);
     onDismissCB();
@@ -50,6 +58,7 @@ const CreateComponent = ({forceRender, onDismissCB, onSuccessCB}) => {
   const clearInputTextData = useCallback(shouldMoveFocusToNameTextInput => {
     todoNameRef.current.clear();
     todoDescRef.current.clear();
+    setSelectedColor(null);
     setTodoNameText('');
     setTodoDescText('');
     if (shouldMoveFocusToNameTextInput) {
@@ -61,7 +70,9 @@ const CreateComponent = ({forceRender, onDismissCB, onSuccessCB}) => {
     todoNameText.length === 0 || todoDescText.length === 0;
 
   const isClearButtonDisabled =
-    todoNameText.length === 0 && todoDescText.length === 0;
+    selectedColor === null &&
+    todoNameText.length === 0 &&
+    todoDescText.length === 0;
 
   return (
     <View style={styles.createCompRootContainerStyle}>
@@ -80,6 +91,11 @@ const CreateComponent = ({forceRender, onDismissCB, onSuccessCB}) => {
         ref={todoDescRef}
         style={[styles.textInputStyle, styles.smallMarginBottom]}
         value={todoDescText}
+      />
+      <ColorPicker
+        defaultColors
+        onColorItemPress={onColorItemPress}
+        selectedColor={selectedColor}
       />
       <TouchableOpacity
         activeOpacity={0.5}
