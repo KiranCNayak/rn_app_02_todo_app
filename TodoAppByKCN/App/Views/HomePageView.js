@@ -25,17 +25,15 @@ import {
 function HomePageView(props) {
   const [todoList, setTodoList] = useState(todoInitList);
 
-  // Since BottomSheet is not removed from the screen once it is placed,
-  //  we need to use a state variable to send the signal for Create TODO
-  //  component to set the focus to 'Name' TextInput, on each open action
-  //  of the BottomSheet.
-  const [shouldRender, setShouldRender] = useState(true);
-
   const bottomSheetRef = useRef(null);
 
   const {height} = useWindowDimensions();
 
-  const renderTodoList = useCallback(TODOList => TODOList.map(TodoItem), []);
+  const renderTodoList = useCallback(
+    TODOList =>
+      TODOList.map(todoProps => <TodoItem key={todoProps.id} {...todoProps} />),
+    [],
+  );
 
   const addNewTodoCB = useCallback(
     newTodo => {
@@ -46,12 +44,10 @@ function HomePageView(props) {
 
   const openBottomSheetHandler = useCallback(() => {
     bottomSheetRef.current.expandBottomSheet();
-    setShouldRender(true);
   }, []);
 
   const closeBottomSheetHandler = useCallback(() => {
     bottomSheetRef.current.closeBottomSheet();
-    setShouldRender(false);
   }, []);
 
   // TODO: Remove this method as well
@@ -91,7 +87,6 @@ function HomePageView(props) {
           bottomSheetBGColor={'#ccc'}
           ref={bottomSheetRef}>
           <CreateComponent
-            forceRender={shouldRender}
             onSuccessCB={addNewTodoCB}
             onDismissCB={closeBottomSheetHandler}
           />

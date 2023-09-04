@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
+import React, {memo, useCallback, useRef, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,7 +9,7 @@ import {
 
 import ColorPicker from './ColorPicker';
 
-const CreateComponent = ({forceRender, onDismissCB, onSuccessCB}) => {
+const CreateComponent = ({onDismissCB, onSuccessCB}) => {
   const todoDescRef = useRef(null);
   const todoNameRef = useRef(null);
 
@@ -17,11 +17,16 @@ const CreateComponent = ({forceRender, onDismissCB, onSuccessCB}) => {
   const [todoDescText, setTodoDescText] = useState('');
   const [todoNameText, setTodoNameText] = useState('');
 
-  // Keyboard should be focussed on the 'name' InputText each time
-  //  'forceRender' value is changed.
-  useEffect(() => {
-    moveFocusToNameTextInput();
-  }, [forceRender]);
+  const clearInputTextData = useCallback(shouldMoveFocusToNameTextInput => {
+    todoNameRef.current.clear();
+    todoDescRef.current.clear();
+    setSelectedColor(null);
+    setTodoNameText('');
+    setTodoDescText('');
+    if (shouldMoveFocusToNameTextInput) {
+      moveFocusToNameTextInput();
+    }
+  }, []);
 
   const moveFocusToDescriptionTextInput = () => {
     todoDescRef.current.focus();
@@ -54,17 +59,6 @@ const CreateComponent = ({forceRender, onDismissCB, onSuccessCB}) => {
     onDismissCB();
     clearInputTextData(false);
   };
-
-  const clearInputTextData = useCallback(shouldMoveFocusToNameTextInput => {
-    todoNameRef.current.clear();
-    todoDescRef.current.clear();
-    setSelectedColor(null);
-    setTodoNameText('');
-    setTodoDescText('');
-    if (shouldMoveFocusToNameTextInput) {
-      moveFocusToNameTextInput();
-    }
-  }, []);
 
   const isAddButtonDisabled =
     todoNameText.length === 0 || todoDescText.length === 0;
