@@ -17,11 +17,9 @@ const FAB = ({onOpenCB}) => {
 
 const styles = StyleSheet.create({
   floatingActionButton: {
-    backgroundColor: 'rgb(100, 34, 243)',
-    borderColor: '#fd2',
+    backgroundColor: '#B4AAA1',
+    borderColor: '#383a3a',
     borderRadius: 48,
-    borderStyle: 'dashed',
-    borderWidth: 2,
     bottom: 10,
     height: 64,
     margin: 'auto',
@@ -31,7 +29,7 @@ const styles = StyleSheet.create({
     width: 64,
   },
   horzLineStyle: {
-    backgroundColor: '#fd2',
+    backgroundColor: '#383a3a',
     borderRadius: 2,
     height: 4,
     top: 15,
@@ -42,7 +40,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   vertLineStyle: {
-    backgroundColor: '#fd2',
+    backgroundColor: '#383a3a',
     borderRadius: 2,
     height: 30,
     left: 15,

@@ -139,7 +139,7 @@ const BottomSheet = forwardRef(
               animationStyle,
             ]}>
             <LinearGradient
-              colors={['#055C9D', '#0E86D4', '#68BBE0']}
+              colors={['#1f1f1f', '#1f1f1f', '#1f1f1f']}
               style={styles.gestureControlBarStyle}>
               <View style={styles.horzGestureControlBarStyle} />
             </LinearGradient>
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 4,
     borderRadius: 2,
-    backgroundColor: 'white',
+    backgroundColor: '#CEDDF2',
   },
 });
 

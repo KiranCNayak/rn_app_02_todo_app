@@ -139,23 +139,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   confirmClearTodoStyleDisabled: {
-    backgroundColor: '#773322',
+    backgroundColor: '#E196A7',
   },
   confirmClearTodoStyleEnabled: {
-    backgroundColor: '#dd4433',
+    backgroundColor: '#FF7894',
   },
   confirmCreateTodoCommonStyle: {
     alignItems: 'center',
     borderRadius: 20,
     fontSize: 16,
+    marginTop: 36,
     marginBottom: 40,
     paddingVertical: 8,
   },
   confirmCreateTodoStyleDisabled: {
-    backgroundColor: '#227722',
+    backgroundColor: '#C5DBD0',
   },
   confirmCreateTodoStyleEnabled: {
-    backgroundColor: '#22aa22',
+    backgroundColor: '#B2EDCF',
   },
   contentStyle: {
     flex: 1,
@@ -164,20 +165,25 @@ const styles = StyleSheet.create({
     maxHeight: '80%',
     marginVertical: '20%',
     marginHorizontal: '5%',
-    backgroundColor: 'rgba(60, 60, 60, 1)',
+    backgroundColor: '#4D4D4D',
   },
   createCompRootContainerStyle: {
     flex: 1,
     padding: 8,
-    backgroundColor: 'rgba(33, 33, 33, 0.8)',
+    backgroundColor: '#3D3D3D',
   },
   createTextStyle: {
     fontSize: 16,
     fontWeight: '700',
-    paddingVertical: 8,
+    padding: 8,
   },
-  disabledText: {color: '#999999'},
-  enabledText: {color: '#dddddd'},
+  disabledText: {
+    color: '#1A181C',
+  },
+  enabledText: {
+    color: 'black',
+    fontWeight: '700',
+  },
   smallMarginBottom: {marginBottom: 16},
   textInputStyle: {
     borderRadius: 8,
@@ -185,7 +191,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     paddingVertical: 8,
     paddingHorizontal: 16,
-    borderColor: '#df2',
+    borderColor: '#606F49',
   },
 });
 

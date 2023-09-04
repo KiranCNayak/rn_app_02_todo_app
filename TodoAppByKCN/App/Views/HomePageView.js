@@ -120,7 +120,7 @@ function HomePageView(props) {
         <BottomSheet
           activeHeight={height * 0.8} // TODO: Set this value via an Enum.
           backdropColor={'black'}
-          bottomSheetBGColor={'#ccc'}
+          bottomSheetBGColor={'black'}
           ref={bottomSheetRef}>
           <CreateComponent
             onSuccessCB={addNewTodoCB}
