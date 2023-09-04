@@ -4,6 +4,8 @@ export const JUSTIFY_CONTENT = {
   CENTER: 'center',
 };
 
+export const SWIPABLE_ITEM_WIDTH = 100;
+
 export const DEFAULT_COLORS_LIST = [
   {
     id: 1,

@@ -13,11 +13,10 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import BottomSheet from '../Components/BottomSheet';
 import FAB from '../Components/FAB';
 import CreateComponent from '../Components/CreateComponent';
-import TodoItem from '../Components/TodoItem';
+import TodoItem from '../Components/TodoItem/TodoItem';
 import {todoInitList} from '../Constants/Constants';
 import {push} from '../Utils/NavigationUtils';
 import {
-  ANIMATION_TYPE,
   NAVIGATION_OPTIONS,
   NAV_STYLES,
   SCREEN_NAMES,

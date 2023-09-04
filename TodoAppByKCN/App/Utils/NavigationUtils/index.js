@@ -49,12 +49,6 @@ export const push = (componentId, screenName, options, passProps, screenId) => {
     return;
   }
 
-  const logableData = {
-    kiran: {componentId, screenName, options, passProps, screenId},
-  };
-
-  console.log(JSON.stringify(logableData, null, 2));
-
   isPushRequestInProgress = true;
   Navigation.push(componentId, {
     component: {
