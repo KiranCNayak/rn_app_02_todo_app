@@ -33,6 +33,7 @@ const TodoItem = item => {
   const onDeleteTriggered = () => {
     'worklet';
     console.log('Delete triggered');
+    item.onDeleteTodoHandler(item.id);
   };
 
   const onEditTriggered = () => {

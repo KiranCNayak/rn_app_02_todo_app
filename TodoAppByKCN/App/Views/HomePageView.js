@@ -9,6 +9,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {runOnJS} from 'react-native-reanimated';
 
 import BottomSheet from '../Components/BottomSheet';
 import FAB from '../Components/FAB';
@@ -29,10 +30,25 @@ function HomePageView(props) {
 
   const {height} = useWindowDimensions();
 
+  const onDeleteTodoHandler = useCallback(
+    todoId => {
+      'worklet';
+      const filteredList = todoList.filter(item => item.id !== todoId);
+      runOnJS(setTodoList)([...filteredList]);
+    },
+    [todoList],
+  );
+
   const renderTodoList = useCallback(
     TODOList =>
-      TODOList.map(todoProps => <TodoItem key={todoProps.id} {...todoProps} />),
-    [],
+      TODOList.map(todoProps => (
+        <TodoItem
+          key={todoProps.id}
+          {...todoProps}
+          onDeleteTodoHandler={onDeleteTodoHandler}
+        />
+      )),
+    [onDeleteTodoHandler],
   );
 
   const addNewTodoCB = useCallback(

@@ -93,28 +93,11 @@ const CreateComponent = ({onDismissCB, onSuccessCB}) => {
       />
       <TouchableOpacity
         activeOpacity={0.5}
-        disabled={isClearButtonDisabled}
-        onPress={() => clearInputTextData(true)}
-        style={[
-          styles.clearTodoStyle,
-          styles.smallMarginBottom,
-          isClearButtonDisabled
-            ? styles.confirmClearTodoStyleDisabled
-            : styles.confirmClearTodoStyleEnabled,
-        ]}>
-        <Text
-          style={
-            isClearButtonDisabled ? styles.disabledText : styles.enabledText
-          }>
-          CLEAR
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        activeOpacity={0.5}
         disabled={isAddButtonDisabled}
         onPress={onAddTodoButtonPressed}
         style={[
           styles.confirmCreateTodoCommonStyle,
+          styles.smallMarginBottom,
           isAddButtonDisabled
             ? styles.confirmCreateTodoStyleDisabled
             : styles.confirmCreateTodoStyleEnabled,
@@ -124,6 +107,23 @@ const CreateComponent = ({onDismissCB, onSuccessCB}) => {
             isAddButtonDisabled ? styles.disabledText : styles.enabledText
           }>
           ADD
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        activeOpacity={0.5}
+        disabled={isClearButtonDisabled}
+        onPress={() => clearInputTextData(true)}
+        style={[
+          styles.clearTodoStyle,
+          isClearButtonDisabled
+            ? styles.confirmClearTodoStyleDisabled
+            : styles.confirmClearTodoStyleEnabled,
+        ]}>
+        <Text
+          style={
+            isClearButtonDisabled ? styles.disabledText : styles.enabledText
+          }>
+          CLEAR
         </Text>
       </TouchableOpacity>
     </View>
