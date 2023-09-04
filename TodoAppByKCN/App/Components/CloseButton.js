@@ -1,12 +1,15 @@
 import React, {memo} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-const CloseBtn = ({onClosePressed, position}) => {
+const CloseBtn = ({onClosePressed, closeBtnPos}) => {
   return (
     <TouchableOpacity
       activeOpacity={0.5}
       onPress={onClosePressed}
-      style={[styles.buttonRowContainerStyle, {justifyContent: `${position}`}]}>
+      style={[
+        styles.buttonRowContainerStyle,
+        {justifyContent: `${closeBtnPos}`},
+      ]}>
       <View style={styles.closeButtonContainer}>
         <Text style={styles.dismissTextStyle}>{'X'}</Text>
       </View>

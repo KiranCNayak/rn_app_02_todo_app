@@ -39,6 +39,7 @@ const TodoItem = item => {
   const onEditTriggered = () => {
     'worklet';
     console.log('Edit triggered');
+    item.onEditTodoHandler(item);
   };
 
   const animationOptions = {

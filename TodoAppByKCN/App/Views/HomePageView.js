@@ -14,6 +14,7 @@ import {runOnJS} from 'react-native-reanimated';
 import BottomSheet from '../Components/BottomSheet';
 import FAB from '../Components/FAB';
 import CreateComponent from '../Components/CreateComponent';
+import EditModal from '../Components/EditModal';
 import TodoItem from '../Components/TodoItem/TodoItem';
 import {todoInitList} from '../Constants/Constants';
 import {push} from '../Utils/NavigationUtils';
@@ -28,6 +29,10 @@ function HomePageView(props) {
 
   const bottomSheetRef = useRef(null);
 
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const [editTodo, setEditTodo] = useState(null);
+
   const {height} = useWindowDimensions();
 
   const onDeleteTodoHandler = useCallback(
@@ -39,6 +44,17 @@ function HomePageView(props) {
     [todoList],
   );
 
+  const onEditTodoHandler = useCallback(todo => {
+    'worklet';
+    runOnJS(setEditTodo)(todo);
+    runOnJS(setShowEditModal)(true);
+  }, []);
+
+  const onDismissEditTodoModal = useCallback(() => {
+    setShowEditModal(false);
+    setEditTodo(null);
+  }, []);
+
   const renderTodoList = useCallback(
     TODOList =>
       TODOList.map(todoProps => (
@@ -46,9 +62,10 @@ function HomePageView(props) {
           key={todoProps.id}
           {...todoProps}
           onDeleteTodoHandler={onDeleteTodoHandler}
+          onEditTodoHandler={onEditTodoHandler}
         />
       )),
-    [onDeleteTodoHandler],
+    [onDeleteTodoHandler, onEditTodoHandler],
   );
 
   const addNewTodoCB = useCallback(
@@ -68,12 +85,15 @@ function HomePageView(props) {
 
   // TODO: Remove this method as well
   const pushScreenToRandomPage = () => {
-    push(
-      props.componentId,
-      SCREEN_NAMES.randomPage,
-      NAVIGATION_OPTIONS(NAV_STYLES.dark, 'Random Page Title', true, false),
-      {},
-    );
+    // TODO: This comment is what was there before
+    // push(
+    //   props.componentId,
+    //   SCREEN_NAMES.randomPage,
+    //   NAVIGATION_OPTIONS(NAV_STYLES.dark, 'Random Page Title', true, false),
+    //   {},
+    // );
+    // TODO: Remove this
+    setShowEditModal(true);
   };
 
   return (
@@ -107,6 +127,13 @@ function HomePageView(props) {
             onDismissCB={closeBottomSheetHandler}
           />
         </BottomSheet>
+        {editTodo && (
+          <EditModal
+            showEditModal={showEditModal}
+            editTodo={editTodo}
+            onDismissCB={onDismissEditTodoModal}
+          />
+        )}
       </SafeAreaView>
     </GestureHandlerRootView>
   );
