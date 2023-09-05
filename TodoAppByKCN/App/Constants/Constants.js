@@ -60,31 +60,31 @@ export const SWIPABLE_ITEM_WIDTH = 100;
 export const DEFAULT_COLORS_LIST = [
   {
     id: 1,
-    colorName: 'GREEN_01',
+    colorName: 'LIGHTEST_GREEN',
     color: '#77bb77',
     colorBG: '',
   },
   {
     id: 2,
-    colorName: 'GREEN_02',
+    colorName: 'LIGHTER_GREEN',
     color: '#559955',
     colorBG: '',
   },
   {
     id: 3,
-    colorName: 'GREEN_03',
+    colorName: 'GREEN',
     color: '#40916c',
     colorBG: '',
   },
   {
     id: 4,
-    colorName: 'GREEN_04',
+    colorName: 'DARKER_GREEN',
     color: '#006f5f',
     colorBG: '',
   },
   {
     id: 5,
-    colorName: 'GREEN_05',
+    colorName: 'DARKEST_GREEN',
     color: '#006000',
     colorBG: '',
   },
