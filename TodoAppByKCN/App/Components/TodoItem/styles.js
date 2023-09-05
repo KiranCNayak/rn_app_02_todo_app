@@ -21,13 +21,30 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
+  completedImageStyle: {
+    height: 40,
+    width: 40,
+    margin: 8,
+  },
+
+  imageContainerStyle: {
+    backgroundColor: '#667766',
+    borderRadius: 40,
+    marginLeft: 8,
+    width: 56,
+  },
+
   rowStyle: {
     flexDirection: 'row',
   },
 
-  todoItemContainerStyle: {
-    left: -SWIPABLE_ITEM_WIDTH,
+  todoImageAndTextContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginVertical: 4,
+  },
+
+  todoTextContainerStyle: {
     padding: 8,
   },
 });

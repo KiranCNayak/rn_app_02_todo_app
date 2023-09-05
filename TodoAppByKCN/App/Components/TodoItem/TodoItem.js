@@ -1,5 +1,11 @@
 import React from 'react';
-import {Text, View, useWindowDimensions} from 'react-native';
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedGestureHandler,
@@ -13,12 +19,15 @@ import {
   DEFAULT_COLOR_INDEX,
   DEFAULT_COLORS_LIST,
   SWIPABLE_ITEM_WIDTH,
+  TODO_LIST_STATUS_TYPE,
 } from '../../Constants/Constants';
 import LeftActionItem from './LeftActionItem';
 import RightActionItem from './RightActionItem';
 import styles from './styles';
 
 const TodoItem = item => {
+  const isCompleted = item.status === TODO_LIST_STATUS_TYPE.COMPLETED;
+
   const {width} = useWindowDimensions();
 
   const sharedLeft = useSharedValue(0);
@@ -38,6 +47,13 @@ const TodoItem = item => {
   const onEditTriggered = () => {
     'worklet';
     item.onEditTodoHandler(item);
+  };
+
+  const onTodoCompletedButtonPressed = () => {
+    item.onTodoCompleteHandler({
+      ...item,
+      status: TODO_LIST_STATUS_TYPE.COMPLETED,
+    });
   };
 
   const animationOptions = {
@@ -79,38 +95,57 @@ const TodoItem = item => {
     },
   });
 
-  return (
-    <PanGestureHandler
-      activeOffsetX={[-25, 25]} // This is needed to have scroll with swipe. Otherwise you only trigger swipe.
-      key={item.id}
-      onGestureEvent={gestureHandler}>
-      <Animated.View style={[swipeAnimation, styles.rowStyle]}>
-        <LeftActionItem
-          backgroundColor={'red'}
-          imageSource={IMAGES.ICON_DELETE}
+  const contentWithoutSwipe = () => (
+    <View
+      style={[
+        styles.todoImageAndTextContainerStyle,
+        {
+          backgroundColor: `${
+            DEFAULT_COLORS_LIST[DEFAULT_COLOR_INDEX[item.color]]?.color ??
+            '#333'
+          }`,
+          left: isCompleted ? 0 : -SWIPABLE_ITEM_WIDTH,
+        },
+      ]}>
+      <TouchableOpacity
+        activeOpacity={0.5}
+        disabled={isCompleted}
+        onPress={onTodoCompletedButtonPressed}
+        style={styles.imageContainerStyle}>
+        <Image
+          source={isCompleted ? IMAGES.ICON_TICK : IMAGES.ICON_THREE_DOTS}
+          style={styles.completedImageStyle}
         />
-        <View
-          style={[
-            styles.todoItemContainerStyle,
-            {
-              backgroundColor: `${
-                DEFAULT_COLORS_LIST[DEFAULT_COLOR_INDEX[item.color]]?.color ??
-                '#333'
-              }`,
-              width,
-            },
-          ]}>
-          <Text style={styles.boldTextStyle}>{item.id}</Text>
-          <Text style={styles.boldTextStyle}>{item.name}</Text>
-          <Text>{item.description}</Text>
-        </View>
-        <RightActionItem
-          backgroundColor={'green'}
-          imageSource={IMAGES.ICON_EDIT}
-        />
-      </Animated.View>
-    </PanGestureHandler>
+      </TouchableOpacity>
+      <View style={[styles.todoTextContainerStyle, {width: width - 80}]}>
+        <Text style={styles.boldTextStyle}>{item.id}</Text>
+        <Text style={styles.boldTextStyle}>{item.name}</Text>
+        <Text>{item.description}</Text>
+      </View>
+    </View>
   );
+  const contentWithSwipe = () => {
+    return (
+      <PanGestureHandler
+        activeOffsetX={[-25, 25]} // This is needed to have scroll with swipe. Otherwise you only trigger swipe.
+        key={item.id}
+        onGestureEvent={gestureHandler}>
+        <Animated.View style={[swipeAnimation, styles.rowStyle]}>
+          <LeftActionItem
+            backgroundColor={'red'}
+            imageSource={IMAGES.ICON_DELETE}
+          />
+          {contentWithoutSwipe()}
+          <RightActionItem
+            backgroundColor={'green'}
+            imageSource={IMAGES.ICON_EDIT}
+          />
+        </Animated.View>
+      </PanGestureHandler>
+    );
+  };
+
+  return isCompleted ? contentWithoutSwipe() : contentWithSwipe();
 };
 
 export default TodoItem;

@@ -16,7 +16,7 @@ import FAB from '../Components/FAB';
 import CreateComponent from '../Components/CreateComponent';
 import EditModal from '../Components/EditModal';
 import TodoItem from '../Components/TodoItem/TodoItem';
-import {todoInitList} from '../Constants/Constants';
+import {TODO_LIST_STATUS_TYPE, todoInitList} from '../Constants/Constants';
 import {push} from '../Utils/NavigationUtils';
 import {
   NAVIGATION_OPTIONS,
@@ -25,9 +25,11 @@ import {
 } from '../Utils/NavigationUtils/NAV_CONSTANTS';
 
 function HomePageView(props) {
-  const [todoList, setTodoList] = useState(todoInitList);
+  const [pendingTodoList, setPendingTodoList] = useState([]);
 
   const [current20StartIdx, setCurrent20StartIdx] = useState(0);
+
+  const [completedTodoList, setCompletedTodoList] = useState([]);
 
   const bottomSheetRef = useRef(null);
 
@@ -39,19 +41,40 @@ function HomePageView(props) {
 
   useEffect(() => {
     if (current20StartIdx + 20 <= todoInitList.length) {
-      setTodoList(
+      setPendingTodoList(
         todoInitList.slice(current20StartIdx, current20StartIdx + 20),
       );
     }
   }, [current20StartIdx]);
 
+  // Here, we are initializing the date from DB (for now, its from Contants file)
+  //  This need not be run on each item change, as the updates themselves adjust
+  //  to that change, in 'onCompleteButtonPressed' method.
+  useEffect(() => {
+    let completedList = [];
+    let pendingList = [];
+
+    for (const todo of todoInitList) {
+      switch (todo.status) {
+        case TODO_LIST_STATUS_TYPE.IN_PROGRESS:
+          pendingList.push(todo);
+          break;
+        case TODO_LIST_STATUS_TYPE.COMPLETED:
+          completedList.push(todo);
+          break;
+      }
+    }
+    setCompletedTodoList(completedList);
+    setPendingTodoList(pendingList);
+  }, []);
+
   const onDeleteTodoHandler = useCallback(
     todoId => {
       'worklet';
-      const filteredList = todoList.filter(item => item.id !== todoId);
-      runOnJS(setTodoList)([...filteredList]);
+      const filteredList = pendingTodoList.filter(item => item.id !== todoId);
+      runOnJS(setPendingTodoList)([...filteredList]);
     },
-    [todoList],
+    [pendingTodoList],
   );
 
   const onEditTodoHandler = useCallback(todo => {
@@ -65,6 +88,19 @@ function HomePageView(props) {
     setEditTodo(null);
   }, []);
 
+  const onTodoCompleteHandler = useCallback(
+    todo => {
+      completedTodoList.unshift(todo);
+      setTimeout(() => {
+        setPendingTodoList(
+          [...pendingTodoList].filter(item => item.id !== todo.id),
+        );
+        setCompletedTodoList(completedTodoList);
+      }, 50);
+    },
+    [completedTodoList, pendingTodoList],
+  );
+
   const renderTodoList = useCallback(
     ({item}) => (
       <TodoItem
@@ -72,9 +108,10 @@ function HomePageView(props) {
         {...item}
         onDeleteTodoHandler={onDeleteTodoHandler}
         onEditTodoHandler={onEditTodoHandler}
+        onTodoCompleteHandler={onTodoCompleteHandler}
       />
     ),
-    [onDeleteTodoHandler, onEditTodoHandler],
+    [onTodoCompleteHandler, onDeleteTodoHandler, onEditTodoHandler],
   );
 
   const flatListKE = useCallback(item => `${item.id}`, []);
@@ -89,7 +126,7 @@ function HomePageView(props) {
   }, []);
 
   const onFlatListEndReached = useCallback(() => {
-    if (current20StartIdx + 20 <= todoInitList.length) {
+    if (current20StartIdx + 20 < todoInitList.length) {
       setCurrent20StartIdx(current20StartIdx + 20);
     }
   }, [current20StartIdx]);
@@ -104,9 +141,9 @@ function HomePageView(props) {
 
   const addNewTodoCB = useCallback(
     newTodo => {
-      setTodoList([...todoList, newTodo]);
+      setPendingTodoList([...pendingTodoList, newTodo]);
     },
-    [todoList],
+    [pendingTodoList],
   );
 
   const openBottomSheetHandler = useCallback(() => {
@@ -118,12 +155,34 @@ function HomePageView(props) {
   }, []);
 
   const onSuccessfulTodoEdit = todo => {
-    const replaceIndex = todoList.findIndex(item => item.id === todo.id);
+    const replaceIndex = pendingTodoList.findIndex(item => item.id === todo.id);
 
-    const newTodoList = [...todoList];
+    const newTodoList = [...pendingTodoList];
     newTodoList[replaceIndex] = todo;
 
-    setTodoList(newTodoList);
+    setPendingTodoList(newTodoList);
+  };
+
+  const renderCompletedList = () => {
+    return (
+      <View style={styles.completedSectionContainerStyle}>
+        <Text style={styles.sectionHeaderTextStyle}>COMPLETED</Text>
+        {completedTodoList.length !== 0 ? (
+          <FlatList
+            data={completedTodoList}
+            getItemLayout={getItemLayout}
+            keyExtractor={flatListKE}
+            onEndReached={onFlatListEndReached}
+            onStartReached={onFlatListStartReached}
+            renderItem={renderTodoList}
+          />
+        ) : (
+          <View style={styles.emptyTextStyle}>
+            <Text>ALL Tasks are Done!</Text>
+          </View>
+        )}
+      </View>
+    );
   };
 
   // TODO: Remove this method as well
@@ -148,14 +207,15 @@ function HomePageView(props) {
         </TouchableOpacity> */}
         <View style={styles.inProgressSectionContainerStyle}>
           <Text style={styles.sectionHeaderTextStyle}>IN PROGRESS</Text>
-          {todoList.length !== 0 ? (
+          {pendingTodoList.length !== 0 || completedTodoList.length !== 0 ? (
             <FlatList
-              data={todoList}
+              data={pendingTodoList}
               getItemLayout={getItemLayout}
               keyExtractor={flatListKE}
               onEndReached={onFlatListEndReached}
               onStartReached={onFlatListStartReached}
               renderItem={renderTodoList}
+              ListFooterComponent={renderCompletedList}
             />
           ) : (
             <View style={styles.emptyTextStyle}>
@@ -164,24 +224,7 @@ function HomePageView(props) {
             </View>
           )}
         </View>
-        <View style={styles.completedSectionContainerStyle}>
-          <Text style={styles.sectionHeaderTextStyle}>COMPLETED</Text>
-          {/* TODO: Change this FlatList below, it is directly copied from above to see the styling */}
-          {todoList.length !== 0 ? (
-            <FlatList
-              data={todoList}
-              getItemLayout={getItemLayout}
-              keyExtractor={flatListKE}
-              onEndReached={onFlatListEndReached}
-              onStartReached={onFlatListStartReached}
-              renderItem={renderTodoList}
-            />
-          ) : (
-            <View style={styles.emptyTextStyle}>
-              <Text>ALL Tasks are Done!</Text>
-            </View>
-          )}
-        </View>
+
         <FAB onOpenCB={openBottomSheetHandler} />
         <BottomSheet
           activeHeight={height * 0.8} // TODO: Set this value via an Enum.

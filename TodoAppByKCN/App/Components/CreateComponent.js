@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 import ColorPicker from './ColorPicker';
+import {TODO_LIST_STATUS_TYPE} from '../Constants/Constants';
 
 const CreateComponent = ({onDismissCB, onSuccessCB}) => {
   const todoDescRef = useRef(null);
@@ -54,6 +55,7 @@ const CreateComponent = ({onDismissCB, onSuccessCB}) => {
       name: todoNameText,
       description: todoDescText,
       color: selectedColor ? selectedColor : '#333333', // Fallback color
+      status: TODO_LIST_STATUS_TYPE.IN_PROGRESS,
     };
     onSuccessCB(newTodo);
     onDismissCB();
