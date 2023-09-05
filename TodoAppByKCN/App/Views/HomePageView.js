@@ -1,11 +1,10 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
+  FlatList,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
   useWindowDimensions,
 } from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -16,7 +15,7 @@ import FAB from '../Components/FAB';
 import CreateComponent from '../Components/CreateComponent';
 import EditModal from '../Components/EditModal';
 import TodoItem from '../Components/TodoItem/TodoItem';
-import {todoInitList} from '../Constants/Constants';
+import {LARGE_INIT_TODO_LIST} from '../Constants/Constants';
 import {push} from '../Utils/NavigationUtils';
 import {
   NAVIGATION_OPTIONS,
@@ -25,7 +24,9 @@ import {
 } from '../Utils/NavigationUtils/NAV_CONSTANTS';
 
 function HomePageView(props) {
-  const [todoList, setTodoList] = useState(todoInitList);
+  const [todoList, setTodoList] = useState([]);
+
+  const [current20StartIdx, setCurrent20StartIdx] = useState(0);
 
   const bottomSheetRef = useRef(null);
 
@@ -34,6 +35,14 @@ function HomePageView(props) {
   const [editTodo, setEditTodo] = useState(null);
 
   const {height} = useWindowDimensions();
+
+  useEffect(() => {
+    if (current20StartIdx + 20 <= LARGE_INIT_TODO_LIST.length) {
+      setTodoList(
+        LARGE_INIT_TODO_LIST.slice(current20StartIdx, current20StartIdx + 20),
+      );
+    }
+  }, [current20StartIdx]);
 
   const onDeleteTodoHandler = useCallback(
     todoId => {
@@ -56,17 +65,41 @@ function HomePageView(props) {
   }, []);
 
   const renderTodoList = useCallback(
-    TODOList =>
-      TODOList.map(todoProps => (
-        <TodoItem
-          key={todoProps.id}
-          {...todoProps}
-          onDeleteTodoHandler={onDeleteTodoHandler}
-          onEditTodoHandler={onEditTodoHandler}
-        />
-      )),
+    ({item}) => (
+      <TodoItem
+        key={item.id}
+        {...item}
+        onDeleteTodoHandler={onDeleteTodoHandler}
+        onEditTodoHandler={onEditTodoHandler}
+      />
+    ),
     [onDeleteTodoHandler, onEditTodoHandler],
   );
+
+  const flatListKE = useCallback(item => `${item.id}`, []);
+
+  const getItemLayout = useCallback((item, index) => {
+    const dataItems = item ?? [];
+    return {
+      length: 85,
+      offset: 85 * dataItems.length,
+      index,
+    };
+  }, []);
+
+  const onFlatListEndReached = useCallback(() => {
+    if (current20StartIdx + 20 <= LARGE_INIT_TODO_LIST.length) {
+      setCurrent20StartIdx(current20StartIdx + 20);
+    }
+  }, [current20StartIdx]);
+
+  const onFlatListStartReached = useCallback(() => {
+    if (current20StartIdx - 20 >= 0) {
+      setCurrent20StartIdx(current20StartIdx - 20);
+    } else if (current20StartIdx !== 0) {
+      setCurrent20StartIdx(0);
+    }
+  }, [current20StartIdx]);
 
   const addNewTodoCB = useCallback(
     newTodo => {
@@ -92,8 +125,6 @@ function HomePageView(props) {
     //   NAVIGATION_OPTIONS(NAV_STYLES.dark, 'Random Page Title', true, false),
     //   {},
     // );
-    // TODO: Remove this
-    setShowEditModal(true);
   };
 
   return (
@@ -105,17 +136,14 @@ function HomePageView(props) {
           onPress={pushScreenToRandomPage}>
           <Text>Go to Random Page</Text>
         </TouchableOpacity>
-        <ScrollView style={styles.mainViewStyle}>
-          <View style={styles.todoListContainerStyle}>
-            {todoList.length ? (
-              renderTodoList(todoList)
-            ) : (
-              <Text style={styles.emptyTextStyle}>
-                {'Empty List here!\nAdd new Todos from the button below'}
-              </Text>
-            )}
-          </View>
-        </ScrollView>
+        <FlatList
+          data={todoList}
+          getItemLayout={getItemLayout}
+          keyExtractor={flatListKE}
+          onEndReached={onFlatListEndReached}
+          onStartReached={onFlatListStartReached}
+          renderItem={renderTodoList}
+        />
         <FAB onOpenCB={openBottomSheetHandler} />
         <BottomSheet
           activeHeight={height * 0.8} // TODO: Set this value via an Enum.
