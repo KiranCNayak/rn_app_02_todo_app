@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  View,
   useWindowDimensions,
 } from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -136,14 +137,21 @@ function HomePageView(props) {
           onPress={pushScreenToRandomPage}>
           <Text>Go to Random Page</Text>
         </TouchableOpacity>
-        <FlatList
-          data={todoList}
-          getItemLayout={getItemLayout}
-          keyExtractor={flatListKE}
-          onEndReached={onFlatListEndReached}
-          onStartReached={onFlatListStartReached}
-          renderItem={renderTodoList}
-        />
+        {todoList.length !== 0 ? (
+          <FlatList
+            data={todoList}
+            getItemLayout={getItemLayout}
+            keyExtractor={flatListKE}
+            onEndReached={onFlatListEndReached}
+            onStartReached={onFlatListStartReached}
+            renderItem={renderTodoList}
+          />
+        ) : (
+          <View style={styles.emptyTextStyle}>
+            <Text>Empty Todo List here!</Text>
+            <Text> Add more from the button below</Text>
+          </View>
+        )}
         <FAB onOpenCB={openBottomSheetHandler} />
         <BottomSheet
           activeHeight={height * 0.8} // TODO: Set this value via an Enum.
@@ -168,7 +176,10 @@ function HomePageView(props) {
 }
 
 const styles = StyleSheet.create({
-  emptyTextStyle: {textAlign: 'center', marginTop: '50%'},
+  emptyTextStyle: {
+    alignItems: 'center',
+    marginTop: '50%',
+  },
   mainViewStyle: {
     backgroundColor: '#212121',
     flex: 1,
