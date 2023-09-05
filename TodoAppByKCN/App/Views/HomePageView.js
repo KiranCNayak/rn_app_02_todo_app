@@ -16,7 +16,7 @@ import FAB from '../Components/FAB';
 import CreateComponent from '../Components/CreateComponent';
 import EditModal from '../Components/EditModal';
 import TodoItem from '../Components/TodoItem/TodoItem';
-import {LARGE_INIT_TODO_LIST} from '../Constants/Constants';
+import {todoInitList} from '../Constants/Constants';
 import {push} from '../Utils/NavigationUtils';
 import {
   NAVIGATION_OPTIONS,
@@ -25,7 +25,7 @@ import {
 } from '../Utils/NavigationUtils/NAV_CONSTANTS';
 
 function HomePageView(props) {
-  const [todoList, setTodoList] = useState([]);
+  const [todoList, setTodoList] = useState(todoInitList);
 
   const [current20StartIdx, setCurrent20StartIdx] = useState(0);
 
@@ -38,9 +38,9 @@ function HomePageView(props) {
   const {height} = useWindowDimensions();
 
   useEffect(() => {
-    if (current20StartIdx + 20 <= LARGE_INIT_TODO_LIST.length) {
+    if (current20StartIdx + 20 <= todoInitList.length) {
       setTodoList(
-        LARGE_INIT_TODO_LIST.slice(current20StartIdx, current20StartIdx + 20),
+        todoInitList.slice(current20StartIdx, current20StartIdx + 20),
       );
     }
   }, [current20StartIdx]);
@@ -89,7 +89,7 @@ function HomePageView(props) {
   }, []);
 
   const onFlatListEndReached = useCallback(() => {
-    if (current20StartIdx + 20 <= LARGE_INIT_TODO_LIST.length) {
+    if (current20StartIdx + 20 <= todoInitList.length) {
       setCurrent20StartIdx(current20StartIdx + 20);
     }
   }, [current20StartIdx]);
@@ -117,6 +117,15 @@ function HomePageView(props) {
     bottomSheetRef.current.closeBottomSheet();
   }, []);
 
+  const onSuccessfulTodoEdit = todo => {
+    const replaceIndex = todoList.findIndex(item => item.id === todo.id);
+
+    const newTodoList = [...todoList];
+    newTodoList[replaceIndex] = todo;
+
+    setTodoList(newTodoList);
+  };
+
   // TODO: Remove this method as well
   const pushScreenToRandomPage = () => {
     // TODO: This comment is what was there before
@@ -132,26 +141,47 @@ function HomePageView(props) {
     <GestureHandlerRootView style={styles.rootContainerStyle}>
       <SafeAreaView style={styles.rootContainerStyle}>
         {/* TODO: Remove the TouchableOpacity below. It's just to see if navigation works as expected */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={{height: 50, alignItems: 'center', justifyContent: 'center'}}
           onPress={pushScreenToRandomPage}>
           <Text>Go to Random Page</Text>
-        </TouchableOpacity>
-        {todoList.length !== 0 ? (
-          <FlatList
-            data={todoList}
-            getItemLayout={getItemLayout}
-            keyExtractor={flatListKE}
-            onEndReached={onFlatListEndReached}
-            onStartReached={onFlatListStartReached}
-            renderItem={renderTodoList}
-          />
-        ) : (
-          <View style={styles.emptyTextStyle}>
-            <Text>Empty Todo List here!</Text>
-            <Text> Add more from the button below</Text>
-          </View>
-        )}
+        </TouchableOpacity> */}
+        <View style={styles.inProgressSectionContainerStyle}>
+          <Text style={styles.sectionHeaderTextStyle}>IN PROGRESS</Text>
+          {todoList.length !== 0 ? (
+            <FlatList
+              data={todoList}
+              getItemLayout={getItemLayout}
+              keyExtractor={flatListKE}
+              onEndReached={onFlatListEndReached}
+              onStartReached={onFlatListStartReached}
+              renderItem={renderTodoList}
+            />
+          ) : (
+            <View style={styles.emptyTextStyle}>
+              <Text>Nothing in the TODO List!</Text>
+              <Text> Add more from the button below</Text>
+            </View>
+          )}
+        </View>
+        <View style={styles.completedSectionContainerStyle}>
+          <Text style={styles.sectionHeaderTextStyle}>COMPLETED</Text>
+          {/* TODO: Change this FlatList below, it is directly copied from above to see the styling */}
+          {todoList.length !== 0 ? (
+            <FlatList
+              data={todoList}
+              getItemLayout={getItemLayout}
+              keyExtractor={flatListKE}
+              onEndReached={onFlatListEndReached}
+              onStartReached={onFlatListStartReached}
+              renderItem={renderTodoList}
+            />
+          ) : (
+            <View style={styles.emptyTextStyle}>
+              <Text>ALL Tasks are Done!</Text>
+            </View>
+          )}
+        </View>
         <FAB onOpenCB={openBottomSheetHandler} />
         <BottomSheet
           activeHeight={height * 0.8} // TODO: Set this value via an Enum.
@@ -168,6 +198,7 @@ function HomePageView(props) {
             showEditModal={showEditModal}
             editTodo={editTodo}
             onDismissCB={onDismissEditTodoModal}
+            onSuccessCB={onSuccessfulTodoEdit}
           />
         )}
       </SafeAreaView>
@@ -176,9 +207,18 @@ function HomePageView(props) {
 }
 
 const styles = StyleSheet.create({
+  completedSectionContainerStyle: {
+    backgroundColor: '#444444',
+    padding: 8,
+    opacity: 0.6,
+  },
   emptyTextStyle: {
     alignItems: 'center',
-    marginTop: '50%',
+    marginVertical: '10%',
+  },
+  inProgressSectionContainerStyle: {
+    backgroundColor: '#222222',
+    padding: 8,
   },
   mainViewStyle: {
     backgroundColor: '#212121',
@@ -186,6 +226,11 @@ const styles = StyleSheet.create({
   },
   rootContainerStyle: {
     flex: 1,
+  },
+  sectionHeaderTextStyle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: 'white',
   },
   todoListContainerStyle: {
     flex: 1,

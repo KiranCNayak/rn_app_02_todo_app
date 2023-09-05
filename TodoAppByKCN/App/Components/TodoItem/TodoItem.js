@@ -32,13 +32,11 @@ const TodoItem = item => {
 
   const onDeleteTriggered = () => {
     'worklet';
-    console.log('Delete triggered');
     item.onDeleteTodoHandler(item.id);
   };
 
   const onEditTriggered = () => {
     'worklet';
-    console.log('Edit triggered');
     item.onEditTodoHandler(item);
   };
 

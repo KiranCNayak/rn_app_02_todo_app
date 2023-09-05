@@ -20,29 +20,11 @@ const EditModal = ({showEditModal, onDismissCB, onSuccessCB, editTodo}) => {
   const editTodoDescRef = useRef(null);
   const editTodoNameRef = useRef(null);
 
-  // console.log(JSON.stringify(editTodo, null, 2));
-
   const [selectedColor, setSelectedColor] = useState(editTodo?.color);
-  // console.log(
-  //   'selectedColor: ',
-  //   selectedColor,
-  //   'editTodo?.color: ',
-  //   editTodo?.color,
-  // );
+
   const [todoDescText, setTodoDescText] = useState(editTodo?.description);
-  // console.log(
-  //   'todoDescText: ',
-  //   todoDescText,
-  //   'editTodo?.description: ',
-  //   editTodo?.description,
-  // );
+
   const [todoNameText, setTodoNameText] = useState(editTodo?.name);
-  // console.log(
-  //   'todoNameText: ',
-  //   todoNameText,
-  //   'editTodo?.name: ',
-  //   editTodo?.name,
-  // );
 
   const clearInputTextData = useCallback(shouldMoveFocusToNameTextInput => {
     editTodoNameRef.current.clear();
@@ -82,29 +64,10 @@ const EditModal = ({showEditModal, onDismissCB, onSuccessCB, editTodo}) => {
       description: todoDescText,
       color: selectedColor ? selectedColor : '#333333', // Fallback color
     };
-    console.log(JSON.stringify(newTodo, null, 2));
-    // onSuccessCB(newTodo);
-    // onDismissCB();
-    // clearInputTextData(false);
-  };
 
-  // console.log(
-  //   '\neditTodo.name: ',
-  //   editTodo.name,
-  //   '\ntodoNameText : ',
-  //   todoNameText,
-  //   '\neditTodo.name === todoNameText : ',
-  //   editTodo.name === todoNameText,
-  //   '\neditTodo.desc:',
-  //   editTodo.description,
-  //   '\ntodoDescText :',
-  //   todoDescText,
-  //   '\neditTodo.description === todoDescText : ',
-  //   editTodo.description === todoDescText,
-  //   '\nDEFAULT_COLORS_LIST[DEFAULT_COLOR_INDEX[editTodo.color]].colorName === selectedColor : ',
-  //   DEFAULT_COLORS_LIST[DEFAULT_COLOR_INDEX[editTodo.color]].colorName ===
-  //     selectedColor,
-  // );
+    onSuccessCB(newTodo);
+    onDismissCB();
+  };
 
   const isEditButtonDisabled = Boolean(
     todoNameText?.length === 0 ||
@@ -115,30 +78,10 @@ const EditModal = ({showEditModal, onDismissCB, onSuccessCB, editTodo}) => {
           selectedColor),
   );
 
-  // console.log(
-  //   '\nselectedColor: ',
-  //   selectedColor,
-  //   '\ntodoNameText : ',
-  //   todoNameText,
-  //   '\ntodoNameText.length : ',
-  //   todoNameText.length,
-  //   '\ntodoDescText:',
-  //   todoDescText,
-  //   '\ntodoDescText.length :',
-  //   todoDescText.length,
-  // );
-
   const isClearButtonDisabled = Boolean(
     selectedColor === null &&
       todoNameText?.length === 0 &&
       todoDescText?.length === 0,
-  );
-
-  console.log(
-    // '\nisEditButtonDisabled:',
-    // isEditButtonDisabled,
-    '\nisClearButtonDisabled:',
-    isClearButtonDisabled,
   );
 
   return (
