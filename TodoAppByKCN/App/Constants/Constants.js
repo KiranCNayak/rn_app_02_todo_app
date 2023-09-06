@@ -63,31 +63,31 @@ export const DEFAULT_COLORS_LIST = [
   {
     id: 1,
     colorName: 'LIGHTEST_GREEN',
-    color: '#77bb77',
+    color: '#464563',
     colorBG: '',
   },
   {
     id: 2,
     colorName: 'LIGHTER_GREEN',
-    color: '#559955',
+    color: '#60678C',
     colorBG: '',
   },
   {
     id: 3,
     colorName: 'GREEN',
-    color: '#40916c',
+    color: '#835B8B',
     colorBG: '',
   },
   {
     id: 4,
     colorName: 'DARKER_GREEN',
-    color: '#006f5f',
+    color: '#72375D',
     colorBG: '',
   },
   {
     id: 5,
     colorName: 'DARKEST_GREEN',
-    color: '#006000',
+    color: '#572433',
     colorBG: '',
   },
 ];
@@ -114,49 +114,49 @@ export const DEFAULT_COLOR_INDEX = {
 export const DEFAULT_ICONS_LIST = [
   {
     id: 'BELL',
-    tintColor: '#FEE3CA',
+    tintColor: '#FF8B00',
     source: IMAGES.ICON_BELL,
   },
   {
     id: 'CALENDAR',
-    tintColor: '#E9B2A5',
+    tintColor: '#FF8B00',
     source: IMAGES.ICON_CALENDAR,
   },
   {
-    id: 'COFFEE',
-    tintColor: '#D3848C',
-    source: IMAGES.ICON_COFFEE,
+    id: 'LINK',
+    tintColor: '#FF8B00',
+    source: IMAGES.ICON_LINK,
   },
   {
-    id: 'COMPASS',
-    tintColor: '#BE6788',
-    source: IMAGES.ICON_COMPASS,
+    id: 'DOLLAR',
+    tintColor: '#FF8B00',
+    source: IMAGES.ICON_DOLLAR,
   },
   {
-    id: 'MAIL',
-    tintColor: '#B44D80',
-    source: IMAGES.ICON_MAIL,
+    id: 'TAG',
+    tintColor: '#FF8B00',
+    source: IMAGES.ICON_TAG,
   },
   {
-    id: 'PIE_CHART',
-    tintColor: '#AC3B6F',
-    source: IMAGES.ICON_PIE_CHART,
+    id: 'PENCIL',
+    tintColor: '#FF8B00',
+    source: IMAGES.ICON_PENCIL,
   },
   {
-    id: 'FLAG',
-    tintColor: '#AF335D',
-    source: IMAGES.ICON_FLAG,
+    id: 'STAR',
+    tintColor: '#FF8B00',
+    source: IMAGES.ICON_STAR,
   },
 ];
 
 export const DEFAULT_ICONS_INDEX = {
   BELL: 0,
   CALENDAR: 1,
-  COFFEE: 2,
-  COMPASS: 3,
-  MAIL: 4,
-  PIE_CHART: 5,
-  FLAG: 6,
+  LINK: 2,
+  DOLLAR: 3,
+  TAG: 4,
+  PENCIL: 5,
+  STAR: 6,
 };
 
 export const TODO_LIST_STATUS_TYPE = {
@@ -171,7 +171,7 @@ export const todoInitList = [
     name: 'Do some thing 01',
     description: 'Description for Todo list item number 01',
     color: 'LIGHTER_GREEN',
-    iconId: 'MAIL',
+    iconId: 'TAG',
   },
   {
     id: '02',
@@ -187,7 +187,7 @@ export const todoInitList = [
     name: 'Do some thing 03',
     description: 'Description for Todo list item number 03',
     color: 'GREEN',
-    iconId: 'COFFEE',
+    iconId: 'LINK',
   },
   {
     id: '04',
@@ -195,7 +195,7 @@ export const todoInitList = [
     name: 'Do some thing 04',
     description: 'Description for Todo list item number 04',
     color: 'DARKER_GREEN',
-    iconId: 'COMPASS',
+    iconId: 'DOLLAR',
   },
   {
     id: '05',
@@ -203,7 +203,7 @@ export const todoInitList = [
     name: 'Do some thing 05',
     description: 'Description for Todo list item number 05',
     color: 'LIGHTEST_GREEN',
-    iconId: 'PIE_CHART',
+    iconId: 'PENCIL',
   },
   {
     id: '06',
@@ -219,7 +219,7 @@ export const todoInitList = [
     name: 'Do some thing 07',
     description: 'Description for Todo list item number 07',
     color: 'GREEN',
-    iconId: 'COFFEE',
+    iconId: 'LINK',
   },
   {
     id: '08',
@@ -227,7 +227,7 @@ export const todoInitList = [
     name: 'Do some thing 08',
     description: 'Description for Todo list item number 08',
     color: 'LIGHTEST_GREEN',
-    iconId: 'FLAG',
+    iconId: 'STAR',
   },
   {
     id: '09',
@@ -235,7 +235,7 @@ export const todoInitList = [
     name: 'Do some thing 09',
     description: 'Description for Todo list item number 09',
     color: 'DARKER_GREEN',
-    iconId: 'PIE_CHART',
+    iconId: 'PENCIL',
   },
   {
     id: '10',
@@ -243,7 +243,7 @@ export const todoInitList = [
     name: 'Do some thing 10',
     description: 'Description for Todo list item number 10',
     color: 'GREEN',
-    iconId: 'COMPASS',
+    iconId: 'DOLLAR',
   },
   {
     id: '11',
@@ -259,7 +259,7 @@ export const todoInitList = [
     name: 'Do some thing 12',
     description: 'Description for Todo list item number 12',
     color: 'DARKER_GREEN',
-    iconId: 'COFFEE',
+    iconId: 'LINK',
   },
   {
     id: '13',
@@ -267,7 +267,7 @@ export const todoInitList = [
     name: 'Do some thing 13',
     description: 'Description for Todo list item number 13',
     color: 'LIGHTEST_GREEN',
-    iconId: 'MAIL',
+    iconId: 'TAG',
   },
   {
     id: '14',
@@ -291,7 +291,7 @@ export const todoInitList = [
     name: 'Do some thing 16',
     description: 'Description for Todo list item number 16',
     color: 'DARKEST_GREEN',
-    iconId: 'PIE_CHART',
+    iconId: 'PENCIL',
   },
   {
     id: '17',
@@ -307,7 +307,7 @@ export const todoInitList = [
     name: 'Do some thing 18',
     description: 'Description for Todo list item number 18',
     color: 'LIGHTER_GREEN',
-    iconId: 'COFFEE',
+    iconId: 'LINK',
   },
   {
     id: '19',
@@ -315,7 +315,7 @@ export const todoInitList = [
     name: 'Do some thing 19',
     description: 'Description for Todo list item number 19',
     color: 'GREEN',
-    iconId: 'COMPASS',
+    iconId: 'DOLLAR',
   },
   {
     id: '20',

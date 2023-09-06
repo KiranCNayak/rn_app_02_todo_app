@@ -123,13 +123,8 @@ const TodoItem = item => {
           style={[
             styles.completedImageStyle,
             {
-              ...(isCompleted
-                ? {}
-                : {
-                    tintColor:
-                      DEFAULT_ICONS_LIST[DEFAULT_ICONS_INDEX[item.iconId]]
-                        .tintColor,
-                  }),
+              tintColor:
+                DEFAULT_ICONS_LIST[DEFAULT_ICONS_INDEX[item.iconId]].tintColor,
             },
           ]}
         />
