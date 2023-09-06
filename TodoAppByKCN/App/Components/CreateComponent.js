@@ -8,13 +8,21 @@ import {
 } from 'react-native';
 
 import ColorPicker from './ColorPicker';
-import {TODO_LIST_STATUS_TYPE} from '../Constants/Constants';
+import {
+  DEFAULT_ICONS_LIST,
+  DEFAULT_ICONS_INDEX,
+  TODO_LIST_STATUS_TYPE,
+} from '../Constants/Constants';
+import IconPicker from './IconPicker';
 
 const CreateComponent = ({onDismissCB, onSuccessCB}) => {
   const todoDescRef = useRef(null);
   const todoNameRef = useRef(null);
 
   const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedIconId, setSelectedIconId] = useState(
+    DEFAULT_ICONS_LIST[DEFAULT_ICONS_INDEX.BELL].id,
+  );
   const [todoDescText, setTodoDescText] = useState('');
   const [todoNameText, setTodoNameText] = useState('');
 
@@ -22,6 +30,7 @@ const CreateComponent = ({onDismissCB, onSuccessCB}) => {
     todoNameRef.current.clear();
     todoDescRef.current.clear();
     setSelectedColor(null);
+    setSelectedIconId(DEFAULT_ICONS_LIST[0].id);
     setTodoNameText('');
     setTodoDescText('');
     if (shouldMoveFocusToNameTextInput) {
@@ -37,24 +46,29 @@ const CreateComponent = ({onDismissCB, onSuccessCB}) => {
     todoNameRef.current.focus();
   };
 
-  const onColorItemPress = color => {
+  const onColorItemPress = useCallback(color => {
     setSelectedColor(color);
-  };
+  }, []);
 
-  const onDescTextChange = value => {
+  const onDescTextChange = useCallback(value => {
     setTodoDescText(value);
-  };
+  }, []);
 
-  const onNameTextChange = value => {
+  const onIconSelected = useCallback(icon => {
+    setSelectedIconId(icon);
+  }, []);
+
+  const onNameTextChange = useCallback(value => {
     setTodoNameText(value);
-  };
+  }, []);
 
   const onAddTodoButtonPressed = () => {
     const newTodo = {
+      color: selectedColor ? selectedColor : '#333333', // Fallback color
+      description: todoDescText,
+      iconId: selectedIconId,
       id: `${Date.now()}`,
       name: todoNameText,
-      description: todoDescText,
-      color: selectedColor ? selectedColor : '#333333', // Fallback color
       status: TODO_LIST_STATUS_TYPE.IN_PROGRESS,
     };
     onSuccessCB(newTodo);
@@ -92,6 +106,10 @@ const CreateComponent = ({onDismissCB, onSuccessCB}) => {
         defaultColors
         onColorItemPress={onColorItemPress}
         selectedColor={selectedColor}
+      />
+      <IconPicker
+        onIconSelected={onIconSelected}
+        selectedIconId={selectedIconId}
       />
       <TouchableOpacity
         activeOpacity={0.5}

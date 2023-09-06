@@ -18,6 +18,8 @@ import {IMAGES} from '../../Config/Images';
 import {
   DEFAULT_COLOR_INDEX,
   DEFAULT_COLORS_LIST,
+  DEFAULT_ICONS_LIST,
+  DEFAULT_ICONS_INDEX,
   SWIPABLE_ITEM_WIDTH,
   TODO_LIST_STATUS_TYPE,
 } from '../../Constants/Constants';
@@ -113,8 +115,23 @@ const TodoItem = item => {
         onPress={onTodoCompletedButtonPressed}
         style={styles.imageContainerStyle}>
         <Image
-          source={isCompleted ? IMAGES.ICON_TICK : IMAGES.ICON_THREE_DOTS}
-          style={styles.completedImageStyle}
+          source={
+            isCompleted
+              ? IMAGES.ICON_TICK
+              : DEFAULT_ICONS_LIST[DEFAULT_ICONS_INDEX[item.iconId]].source
+          }
+          style={[
+            styles.completedImageStyle,
+            {
+              ...(isCompleted
+                ? {}
+                : {
+                    tintColor:
+                      DEFAULT_ICONS_LIST[DEFAULT_ICONS_INDEX[item.iconId]]
+                        .tintColor,
+                  }),
+            },
+          ]}
         />
       </TouchableOpacity>
       <View style={[styles.todoTextContainerStyle, {width: width - 80}]}>

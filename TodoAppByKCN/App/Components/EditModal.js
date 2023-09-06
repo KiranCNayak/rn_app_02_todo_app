@@ -8,19 +8,22 @@ import {
   View,
 } from 'react-native';
 
-import ColorPicker from './ColorPicker';
 import CloseButton from './CloseButton';
+import ColorPicker from './ColorPicker';
 import {
   DEFAULT_COLORS_LIST,
   DEFAULT_COLOR_INDEX,
   JUSTIFY_CONTENT,
 } from '../Constants/Constants';
+import IconPicker from './IconPicker';
 
 const EditModal = ({showEditModal, onDismissCB, onSuccessCB, editTodo}) => {
   const editTodoDescRef = useRef(null);
   const editTodoNameRef = useRef(null);
 
   const [selectedColor, setSelectedColor] = useState(editTodo?.color);
+
+  const [selectedIconId, setSelectedIconId] = useState(editTodo?.iconId);
 
   const [todoDescText, setTodoDescText] = useState(editTodo?.description);
 
@@ -45,24 +48,29 @@ const EditModal = ({showEditModal, onDismissCB, onSuccessCB, editTodo}) => {
     editTodoNameRef.current.focus();
   };
 
-  const onColorItemPress = color => {
+  const onColorItemPress = useCallback(color => {
     setSelectedColor(color);
-  };
+  }, []);
 
-  const onDescTextChange = value => {
+  const onIconSelected = useCallback(iconId => {
+    setSelectedIconId(iconId);
+  }, []);
+
+  const onDescTextChange = useCallback(value => {
     setTodoDescText(value);
-  };
+  }, []);
 
-  const onNameTextChange = value => {
+  const onNameTextChange = useCallback(value => {
     setTodoNameText(value);
-  };
+  }, []);
 
   const onEditTodoButtonPressed = () => {
     const newTodo = {
+      color: selectedColor ? selectedColor : '#333333', // Fallback color
+      description: todoDescText,
+      iconId: selectedIconId,
       id: editTodo.id,
       name: todoNameText,
-      description: todoDescText,
-      color: selectedColor ? selectedColor : '#333333', // Fallback color
     };
 
     onSuccessCB(newTodo);
@@ -75,7 +83,8 @@ const EditModal = ({showEditModal, onDismissCB, onSuccessCB, editTodo}) => {
       (editTodo.name === todoNameText &&
         editTodo.description === todoDescText &&
         DEFAULT_COLORS_LIST[DEFAULT_COLOR_INDEX[editTodo.color]].colorName ===
-          selectedColor),
+          selectedColor &&
+        editTodo.iconId === selectedIconId),
   );
 
   const isClearButtonDisabled = Boolean(
@@ -115,6 +124,12 @@ const EditModal = ({showEditModal, onDismissCB, onSuccessCB, editTodo}) => {
             onColorItemPress={onColorItemPress}
             selectedColor={selectedColor}
           />
+          <View style={styles.iconPickerContainerStyle}>
+            <IconPicker
+              onIconSelected={onIconSelected}
+              selectedIconId={selectedIconId}
+            />
+          </View>
           <TouchableOpacity
             activeOpacity={0.5}
             disabled={isEditButtonDisabled}
@@ -236,14 +251,17 @@ const styles = StyleSheet.create({
     right: 0,
     paddingTop: '10%',
     paddingBottom: '10%',
-    paddingLeft: '10%',
-    paddingRight: '10%',
+    paddingHorizontal: 8,
     backgroundColor: 'rgba(0, 0, 0, 0.75)',
     alignItems: 'center',
   },
 
   enabledText: {
     color: '#dddddd',
+  },
+
+  iconPickerContainerStyle: {
+    marginBottom: 36,
   },
 
   rootContainerStyle: {

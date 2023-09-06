@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo, useCallback} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import {DEFAULT_COLORS_LIST} from '../Constants/Constants';
@@ -9,8 +9,8 @@ const ColorPicker = ({defaultColors, selectedColor, onColorItemPress}) => {
     colorsList = DEFAULT_COLORS_LIST;
   }
 
-  const renderColorItem = colorItem => {
-    return (
+  const renderColorItem = useCallback(
+    colorItem => (
       <TouchableOpacity
         activeOpacity={0.5}
         key={colorItem.id}
@@ -20,8 +20,9 @@ const ColorPicker = ({defaultColors, selectedColor, onColorItemPress}) => {
           <View style={styles.selectedColorStyle} />
         )}
       </TouchableOpacity>
-    );
-  };
+    ),
+    [onColorItemPress, selectedColor],
+  );
 
   return (
     <View style={styles.colorPickerRootStyle}>
@@ -35,7 +36,7 @@ const ColorPicker = ({defaultColors, selectedColor, onColorItemPress}) => {
   );
 };
 
-export default ColorPicker;
+export default memo(ColorPicker);
 
 const styles = StyleSheet.create({
   colorPickerContainerStyle: {

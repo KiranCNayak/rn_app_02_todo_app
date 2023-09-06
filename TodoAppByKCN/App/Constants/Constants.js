@@ -1,3 +1,5 @@
+import {IMAGES} from '../Config/Images';
+
 export const JUSTIFY_CONTENT = {
   START: 'flex-start',
   END: 'flex-end',
@@ -109,6 +111,54 @@ export const DEFAULT_COLOR_INDEX = {
   DARKEST_GREEN: 4,
 };
 
+export const DEFAULT_ICONS_LIST = [
+  {
+    id: 'BELL',
+    tintColor: '#FEE3CA',
+    source: IMAGES.ICON_BELL,
+  },
+  {
+    id: 'CALENDAR',
+    tintColor: '#E9B2A5',
+    source: IMAGES.ICON_CALENDAR,
+  },
+  {
+    id: 'COFFEE',
+    tintColor: '#D3848C',
+    source: IMAGES.ICON_COFFEE,
+  },
+  {
+    id: 'COMPASS',
+    tintColor: '#BE6788',
+    source: IMAGES.ICON_COMPASS,
+  },
+  {
+    id: 'MAIL',
+    tintColor: '#B44D80',
+    source: IMAGES.ICON_MAIL,
+  },
+  {
+    id: 'PIE_CHART',
+    tintColor: '#AC3B6F',
+    source: IMAGES.ICON_PIE_CHART,
+  },
+  {
+    id: 'FLAG',
+    tintColor: '#AF335D',
+    source: IMAGES.ICON_FLAG,
+  },
+];
+
+export const DEFAULT_ICONS_INDEX = {
+  BELL: 0,
+  CALENDAR: 1,
+  COFFEE: 2,
+  COMPASS: 3,
+  MAIL: 4,
+  PIE_CHART: 5,
+  FLAG: 6,
+};
+
 export const TODO_LIST_STATUS_TYPE = {
   IN_PROGRESS: 'IN_PROGRESS',
   COMPLETED: 'COMPLETED',
@@ -121,6 +171,7 @@ export const todoInitList = [
     name: 'Do some thing 01',
     description: 'Description for Todo list item number 01',
     color: 'LIGHTER_GREEN',
+    iconId: 'MAIL',
   },
   {
     id: '02',
@@ -128,6 +179,7 @@ export const todoInitList = [
     name: 'Do some thing 02',
     description: 'Description for Todo list item number 02',
     color: 'DARKEST_GREEN',
+    iconId: 'BELL',
   },
   {
     id: '03',
@@ -135,6 +187,7 @@ export const todoInitList = [
     name: 'Do some thing 03',
     description: 'Description for Todo list item number 03',
     color: 'GREEN',
+    iconId: 'COFFEE',
   },
   {
     id: '04',
@@ -142,6 +195,7 @@ export const todoInitList = [
     name: 'Do some thing 04',
     description: 'Description for Todo list item number 04',
     color: 'DARKER_GREEN',
+    iconId: 'COMPASS',
   },
   {
     id: '05',
@@ -149,6 +203,7 @@ export const todoInitList = [
     name: 'Do some thing 05',
     description: 'Description for Todo list item number 05',
     color: 'LIGHTEST_GREEN',
+    iconId: 'PIE_CHART',
   },
   {
     id: '06',
@@ -156,6 +211,7 @@ export const todoInitList = [
     name: 'Do some thing 06',
     description: 'Description for Todo list item number 06',
     color: 'LIGHTER_GREEN',
+    iconId: 'BELL',
   },
   {
     id: '07',
@@ -163,6 +219,7 @@ export const todoInitList = [
     name: 'Do some thing 07',
     description: 'Description for Todo list item number 07',
     color: 'GREEN',
+    iconId: 'COFFEE',
   },
   {
     id: '08',
@@ -170,6 +227,7 @@ export const todoInitList = [
     name: 'Do some thing 08',
     description: 'Description for Todo list item number 08',
     color: 'LIGHTEST_GREEN',
+    iconId: 'FLAG',
   },
   {
     id: '09',
@@ -177,6 +235,7 @@ export const todoInitList = [
     name: 'Do some thing 09',
     description: 'Description for Todo list item number 09',
     color: 'DARKER_GREEN',
+    iconId: 'PIE_CHART',
   },
   {
     id: '10',
@@ -184,6 +243,7 @@ export const todoInitList = [
     name: 'Do some thing 10',
     description: 'Description for Todo list item number 10',
     color: 'GREEN',
+    iconId: 'COMPASS',
   },
   {
     id: '11',
@@ -191,6 +251,7 @@ export const todoInitList = [
     name: 'Do some thing 11',
     description: 'Description for Todo list item number 11',
     color: 'DARKEST_GREEN',
+    iconId: 'CALENDAR',
   },
   {
     id: '12',
@@ -198,6 +259,7 @@ export const todoInitList = [
     name: 'Do some thing 12',
     description: 'Description for Todo list item number 12',
     color: 'DARKER_GREEN',
+    iconId: 'COFFEE',
   },
   {
     id: '13',
@@ -205,6 +267,7 @@ export const todoInitList = [
     name: 'Do some thing 13',
     description: 'Description for Todo list item number 13',
     color: 'LIGHTEST_GREEN',
+    iconId: 'MAIL',
   },
   {
     id: '14',
@@ -212,6 +275,7 @@ export const todoInitList = [
     name: 'Do some thing 14',
     description: 'Description for Todo list item number 14',
     color: 'DARKER_GREEN',
+    iconId: 'BELL',
   },
   {
     id: '15',
@@ -219,6 +283,7 @@ export const todoInitList = [
     name: 'Do some thing 15',
     description: 'Description for Todo list item number 15',
     color: 'GREEN',
+    iconId: 'CALENDAR',
   },
   {
     id: '16',
@@ -226,6 +291,7 @@ export const todoInitList = [
     name: 'Do some thing 16',
     description: 'Description for Todo list item number 16',
     color: 'DARKEST_GREEN',
+    iconId: 'PIE_CHART',
   },
   {
     id: '17',
@@ -233,6 +299,7 @@ export const todoInitList = [
     name: 'Do some thing 17',
     description: 'Description for Todo list item number 17',
     color: 'LIGHTEST_GREEN',
+    iconId: 'BELL',
   },
   {
     id: '18',
@@ -240,6 +307,7 @@ export const todoInitList = [
     name: 'Do some thing 18',
     description: 'Description for Todo list item number 18',
     color: 'LIGHTER_GREEN',
+    iconId: 'COFFEE',
   },
   {
     id: '19',
@@ -247,6 +315,7 @@ export const todoInitList = [
     name: 'Do some thing 19',
     description: 'Description for Todo list item number 19',
     color: 'GREEN',
+    iconId: 'COMPASS',
   },
   {
     id: '20',
@@ -254,6 +323,7 @@ export const todoInitList = [
     name: 'Do some thing 20',
     description: 'Description for Todo list item number 20',
     color: 'DARKER_GREEN',
+    iconId: 'CALENDAR',
   },
 ];
 
