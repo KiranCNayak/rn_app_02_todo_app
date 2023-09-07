@@ -1,3 +1,4 @@
+import React, {memo, useCallback, useRef} from 'react';
 import {
   Animated,
   Image,
@@ -5,12 +6,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {IMAGES} from '../Config/Images';
+import {getThemeMode} from '../Redux/themeMode/selectors';
+import {toggleThemeMode} from '../Redux/themeMode/themeModeSlice';
 
-const DarkAndLightModeToggle = ({mode, onModeQueryHandler}) => {
-  const [currentMode, setCurrentMode] = useState(mode);
+const DarkAndLightModeToggle = ({onModeQueryHandler}) => {
+  const dispatch = useDispatch();
+
+  const currentMode = useSelector(getThemeMode);
+
+  // console.log('Mode:', currentMode);
 
   const isDarkMode = currentMode === 'dark';
 
@@ -18,16 +25,17 @@ const DarkAndLightModeToggle = ({mode, onModeQueryHandler}) => {
     new Animated.Value(isDarkMode ? 4 : 44),
   ).current;
 
-  const togglePressedHandler = () => {
+  const togglePressedHandler = useCallback(() => {
     Animated.timing(toggleAnimation, {
       toValue: isDarkMode ? 44 : 4,
       duration: 200,
       useNativeDriver: false,
     }).start();
 
-    setCurrentMode(isDarkMode ? 'light' : 'dark');
+    dispatch(toggleThemeMode());
+
     onModeQueryHandler(isDarkMode ? 'light' : 'dark');
-  };
+  }, [dispatch, isDarkMode, onModeQueryHandler, toggleAnimation]);
 
   return (
     <TouchableOpacity
@@ -45,7 +53,7 @@ const DarkAndLightModeToggle = ({mode, onModeQueryHandler}) => {
   );
 };
 
-export default DarkAndLightModeToggle;
+export default memo(DarkAndLightModeToggle);
 
 const styles = StyleSheet.create({
   circleMaskStyle: {
@@ -73,6 +81,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 4,
     position: 'absolute',
-    top: 4,
+    right: 6,
+    top: 6,
   },
 });

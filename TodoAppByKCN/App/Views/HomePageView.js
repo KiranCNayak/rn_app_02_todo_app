@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {runOnJS} from 'react-native-reanimated';
+import {connect} from 'react-redux';
 
 import BottomSheet from '../Components/BottomSheet';
 import FAB from '../Components/FAB';
@@ -26,17 +27,19 @@ import {
 import DarkAndLightModeToggle from '../Components/DarkAndLightModeToggle';
 
 function HomePageView(props) {
+  const bottomSheetRef = useRef(null);
+
   const [pendingTodoList, setPendingTodoList] = useState([]);
 
   const [current20StartIdx, setCurrent20StartIdx] = useState(0);
 
   const [completedTodoList, setCompletedTodoList] = useState([]);
 
-  const bottomSheetRef = useRef(null);
-
   const [showEditModal, setShowEditModal] = useState(false);
 
   const [editTodo, setEditTodo] = useState(null);
+
+  const [themeMode, setThemeMode] = useState('dark');
 
   const {height} = useWindowDimensions();
 
@@ -102,10 +105,12 @@ function HomePageView(props) {
     [completedTodoList, pendingTodoList],
   );
 
-  const onModeQueryHandler = mode => {
-    // TODO: For now I am just taking the mode, on each press
-    console.log('Current Mode: ', mode);
-  };
+  const onModeQueryHandler = useCallback(mode => {
+    // INFO: For now, theme is set after the duration of animation for toggle has finished. Fix it.
+    setTimeout(() => {
+      setThemeMode(mode);
+    }, 200);
+  }, []);
 
   const renderTodoList = useCallback(
     ({item}) => (
@@ -212,12 +217,17 @@ function HomePageView(props) {
           <Text>Go to Random Page</Text>
         </TouchableOpacity> */}
         <View style={styles.toggleViewContainerStyle}>
-          <DarkAndLightModeToggle
-            mode={'dark'}
-            onModeQueryHandler={onModeQueryHandler}
-          />
+          <DarkAndLightModeToggle onModeQueryHandler={onModeQueryHandler} />
         </View>
-        <View style={styles.inProgressSectionContainerStyle}>
+        <View
+          style={[
+            styles.inProgressSectionContainerStyle,
+            {
+              ...(themeMode === 'dark'
+                ? {backgroundColor: '#111'}
+                : {backgroundColor: '#888'}),
+            },
+          ]}>
           <Text style={styles.sectionHeaderTextStyle}>IN PROGRESS</Text>
           {pendingTodoList.length !== 0 || completedTodoList.length !== 0 ? (
             <FlatList
@@ -274,8 +284,8 @@ const styles = StyleSheet.create({
   },
 
   inProgressSectionContainerStyle: {
-    backgroundColor: '#222222',
     padding: 8,
+    marginBottom: 72,
   },
 
   mainViewStyle: {
@@ -299,8 +309,7 @@ const styles = StyleSheet.create({
 
   toggleViewContainerStyle: {
     height: 60,
-    backgroundColor: '#333',
   },
 });
 
-export default HomePageView;
+export default connect()(HomePageView);
