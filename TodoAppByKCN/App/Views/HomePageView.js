@@ -23,6 +23,7 @@ import {
   NAV_STYLES,
   SCREEN_NAMES,
 } from '../Utils/NavigationUtils/NAV_CONSTANTS';
+import DarkAndLightModeToggle from '../Components/DarkAndLightModeToggle';
 
 function HomePageView(props) {
   const [pendingTodoList, setPendingTodoList] = useState([]);
@@ -100,6 +101,11 @@ function HomePageView(props) {
     },
     [completedTodoList, pendingTodoList],
   );
+
+  const onModeQueryHandler = mode => {
+    // TODO: For now I am just taking the mode, on each press
+    console.log('Current Mode: ', mode);
+  };
 
   const renderTodoList = useCallback(
     ({item}) => (
@@ -205,6 +211,12 @@ function HomePageView(props) {
           onPress={pushScreenToRandomPage}>
           <Text>Go to Random Page</Text>
         </TouchableOpacity> */}
+        <View style={styles.toggleViewContainerStyle}>
+          <DarkAndLightModeToggle
+            mode={'dark'}
+            onModeQueryHandler={onModeQueryHandler}
+          />
+        </View>
         <View style={styles.inProgressSectionContainerStyle}>
           <Text style={styles.sectionHeaderTextStyle}>IN PROGRESS</Text>
           {pendingTodoList.length !== 0 || completedTodoList.length !== 0 ? (
@@ -255,28 +267,39 @@ const styles = StyleSheet.create({
     padding: 8,
     opacity: 0.6,
   },
+
   emptyTextStyle: {
     alignItems: 'center',
     marginVertical: '10%',
   },
+
   inProgressSectionContainerStyle: {
     backgroundColor: '#222222',
     padding: 8,
   },
+
   mainViewStyle: {
     backgroundColor: '#212121',
     flex: 1,
   },
+
   rootContainerStyle: {
     flex: 1,
   },
+
   sectionHeaderTextStyle: {
     fontSize: 18,
     fontWeight: '700',
     color: 'white',
   },
+
   todoListContainerStyle: {
     flex: 1,
+  },
+
+  toggleViewContainerStyle: {
+    height: 60,
+    backgroundColor: '#333',
   },
 });
 
