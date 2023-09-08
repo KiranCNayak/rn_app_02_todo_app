@@ -1,7 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
-  themeMode: 'dark', // TODO: We can get the data from localStorage
+  themeMode: 'dark',
 };
 
 export const themeModeSlice = createSlice({
@@ -10,10 +10,12 @@ export const themeModeSlice = createSlice({
   reducers: {
     toggleThemeMode: state => {
       state.themeMode = state.themeMode === 'dark' ? 'light' : 'dark';
-      // TODO: We can set the data to localStorage here
+    },
+    setCustomThemeMode: (state, action) => {
+      state.themeMode = action.payload.themeMode;
     },
   },
 });
 
-export const {toggleThemeMode} = themeModeSlice.actions;
+export const {setCustomThemeMode, toggleThemeMode} = themeModeSlice.actions;
 export default themeModeSlice.reducer;

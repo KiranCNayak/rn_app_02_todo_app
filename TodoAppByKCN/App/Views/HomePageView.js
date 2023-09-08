@@ -4,27 +4,27 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   useWindowDimensions,
 } from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {runOnJS} from 'react-native-reanimated';
-import {connect} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 
 import BottomSheet from '../Components/BottomSheet';
 import FAB from '../Components/FAB';
 import CreateComponent from '../Components/CreateComponent';
+import DarkAndLightModeToggle from '../Components/DarkAndLightModeToggle';
 import EditModal from '../Components/EditModal';
 import TodoItem from '../Components/TodoItem/TodoItem';
 import {TODO_LIST_STATUS_TYPE, todoInitList} from '../Constants/Constants';
+import {getThemeMode} from '../Redux/themeMode/selectors';
 import {push} from '../Utils/NavigationUtils';
 import {
   NAVIGATION_OPTIONS,
   NAV_STYLES,
   SCREEN_NAMES,
 } from '../Utils/NavigationUtils/NAV_CONSTANTS';
-import DarkAndLightModeToggle from '../Components/DarkAndLightModeToggle';
 
 function HomePageView(props) {
   const bottomSheetRef = useRef(null);
@@ -39,7 +39,7 @@ function HomePageView(props) {
 
   const [editTodo, setEditTodo] = useState(null);
 
-  const [themeMode, setThemeMode] = useState('dark');
+  const themeMode = useSelector(getThemeMode);
 
   const {height} = useWindowDimensions();
 
@@ -104,13 +104,6 @@ function HomePageView(props) {
     },
     [completedTodoList, pendingTodoList],
   );
-
-  const onModeQueryHandler = useCallback(mode => {
-    // INFO: For now, theme is set after the duration of animation for toggle has finished. Fix it.
-    setTimeout(() => {
-      setThemeMode(mode);
-    }, 200);
-  }, []);
 
   const renderTodoList = useCallback(
     ({item}) => (
@@ -217,7 +210,7 @@ function HomePageView(props) {
           <Text>Go to Random Page</Text>
         </TouchableOpacity> */}
         <View style={styles.toggleViewContainerStyle}>
-          <DarkAndLightModeToggle onModeQueryHandler={onModeQueryHandler} />
+          <DarkAndLightModeToggle />
         </View>
         <View
           style={[

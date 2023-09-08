@@ -1,41 +1,54 @@
-import React, {memo, useCallback, useRef} from 'react';
-import {
-  Animated,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, {memo, useCallback, useEffect} from 'react';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {IMAGES} from '../Config/Images';
 import {getThemeMode} from '../Redux/themeMode/selectors';
-import {toggleThemeMode} from '../Redux/themeMode/themeModeSlice';
+import {
+  setCustomThemeMode,
+  toggleThemeMode,
+} from '../Redux/themeMode/themeModeSlice';
 
-const DarkAndLightModeToggle = ({onModeQueryHandler}) => {
+const DarkAndLightModeToggle = () => {
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const runner = async () => {
+      try {
+        const value = await AsyncStorage.getItem('themeMode');
+        const v = JSON.parse(value);
+        if (v === 'light' || v === 'dark') {
+          dispatch(setCustomThemeMode({themeMode: v}));
+        } else {
+          dispatch(setCustomThemeMode({themeMode: 'dark'}));
+        }
+      } catch (error) {
+        console.log('Error Occured: ', error);
+        dispatch(setCustomThemeMode({themeMode: 'dark'}));
+      }
+    };
+    runner();
+  }, [dispatch]);
 
   const currentMode = useSelector(getThemeMode);
 
-  // console.log('Mode:', currentMode);
-
   const isDarkMode = currentMode === 'dark';
 
-  const toggleAnimation = useRef(
-    new Animated.Value(isDarkMode ? 4 : 44),
-  ).current;
-
   const togglePressedHandler = useCallback(() => {
-    Animated.timing(toggleAnimation, {
-      toValue: isDarkMode ? 44 : 4,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-
     dispatch(toggleThemeMode());
-
-    onModeQueryHandler(isDarkMode ? 'light' : 'dark');
-  }, [dispatch, isDarkMode, onModeQueryHandler, toggleAnimation]);
+    const runner = async () => {
+      try {
+        await AsyncStorage.setItem(
+          'themeMode',
+          JSON.stringify(isDarkMode ? 'light' : 'dark'),
+        );
+      } catch (error) {
+        console.log('Error Occured: ', error);
+      }
+    };
+    runner();
+  }, [dispatch, isDarkMode]);
 
   return (
     <TouchableOpacity
@@ -45,9 +58,7 @@ const DarkAndLightModeToggle = ({onModeQueryHandler}) => {
       <View style={styles.toggleViewContainerStyle}>
         <Image source={IMAGES.ICON_SUN} style={styles.iconStyle} />
         <Image source={IMAGES.ICON_MOON} style={styles.iconStyle} />
-        <Animated.View
-          style={[{left: toggleAnimation}, styles.circleMaskStyle]}
-        />
+        <View style={[{left: isDarkMode ? 4 : 44}, styles.circleMaskStyle]} />
       </View>
     </TouchableOpacity>
   );
