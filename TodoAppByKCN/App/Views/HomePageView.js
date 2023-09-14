@@ -5,13 +5,13 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   useWindowDimensions,
 } from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {runOnJS} from 'react-native-reanimated';
 import {connect, useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import BottomSheet from '../Components/BottomSheet';
 import FAB from '../Components/FAB';
@@ -21,7 +21,6 @@ import EditModal from '../Components/EditModal';
 import TodoItem from '../Components/TodoItem/TodoItem';
 import {todoInitList} from '../Constants/Constants';
 import {getThemeMode} from '../Redux/themeMode/selectors';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function HomePageView(props) {
   const bottomSheetRef = useRef(null);
