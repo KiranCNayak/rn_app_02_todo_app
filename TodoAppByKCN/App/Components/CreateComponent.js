@@ -9,6 +9,8 @@ import {
 
 import ColorPicker from './ColorPicker';
 import {
+  DEFAULT_COLOR_INDEX,
+  DEFAULT_COLORS_LIST,
   DEFAULT_ICONS_LIST,
   DEFAULT_ICONS_INDEX,
   TODO_LIST_STATUS_TYPE,
@@ -19,7 +21,9 @@ const CreateComponent = ({onDismissCB, onSuccessCB}) => {
   const todoDescRef = useRef(null);
   const todoNameRef = useRef(null);
 
-  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(
+    DEFAULT_COLORS_LIST[DEFAULT_COLOR_INDEX.LIGHTEST_GREEN].colorName,
+  );
   const [selectedIconId, setSelectedIconId] = useState(
     DEFAULT_ICONS_LIST[DEFAULT_ICONS_INDEX.BELL].id,
   );
@@ -29,7 +33,9 @@ const CreateComponent = ({onDismissCB, onSuccessCB}) => {
   const clearInputTextData = useCallback(shouldMoveFocusToNameTextInput => {
     todoNameRef.current.clear();
     todoDescRef.current.clear();
-    setSelectedColor(null);
+    setSelectedColor(
+      DEFAULT_COLORS_LIST[DEFAULT_COLOR_INDEX.LIGHTEST_GREEN].colorName,
+    );
     setSelectedIconId(DEFAULT_ICONS_LIST[0].id);
     setTodoNameText('');
     setTodoDescText('');
@@ -64,7 +70,7 @@ const CreateComponent = ({onDismissCB, onSuccessCB}) => {
 
   const onAddTodoButtonPressed = () => {
     const newTodo = {
-      color: selectedColor ? selectedColor : '#333333', // Fallback color
+      color: selectedColor,
       description: todoDescText,
       iconId: selectedIconId,
       id: `${Date.now()}`,
@@ -80,7 +86,9 @@ const CreateComponent = ({onDismissCB, onSuccessCB}) => {
     todoNameText.length === 0 || todoDescText.length === 0;
 
   const isClearButtonDisabled =
-    selectedColor === null &&
+    selectedColor ===
+      DEFAULT_COLORS_LIST[DEFAULT_COLOR_INDEX.LIGHTEST_GREEN].colorName &&
+    selectedIconId === DEFAULT_ICONS_LIST[DEFAULT_ICONS_INDEX.BELL].id &&
     todoNameText.length === 0 &&
     todoDescText.length === 0;
 

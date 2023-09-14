@@ -13,6 +13,8 @@ import ColorPicker from './ColorPicker';
 import {
   DEFAULT_COLORS_LIST,
   DEFAULT_COLOR_INDEX,
+  DEFAULT_ICONS_INDEX,
+  DEFAULT_ICONS_LIST,
   JUSTIFY_CONTENT,
 } from '../Constants/Constants';
 import IconPicker from './IconPicker';
@@ -32,7 +34,10 @@ const EditModal = ({showEditModal, onDismissCB, onSuccessCB, editTodo}) => {
   const clearInputTextData = useCallback(shouldMoveFocusToNameTextInput => {
     editTodoNameRef.current.clear();
     editTodoDescRef.current.clear();
-    setSelectedColor(null);
+    setSelectedColor(
+      DEFAULT_COLORS_LIST[DEFAULT_COLOR_INDEX.LIGHTEST_GREEN].colorName,
+    );
+    setSelectedIconId(DEFAULT_ICONS_LIST[DEFAULT_ICONS_INDEX.BELL].id);
     setTodoNameText('');
     setTodoDescText('');
     if (shouldMoveFocusToNameTextInput) {
@@ -66,7 +71,7 @@ const EditModal = ({showEditModal, onDismissCB, onSuccessCB, editTodo}) => {
 
   const onEditTodoButtonPressed = () => {
     const newTodo = {
-      color: selectedColor ? selectedColor : '#333333', // Fallback color
+      color: selectedColor,
       description: todoDescText,
       iconId: selectedIconId,
       id: editTodo.id,
@@ -88,7 +93,9 @@ const EditModal = ({showEditModal, onDismissCB, onSuccessCB, editTodo}) => {
   );
 
   const isClearButtonDisabled = Boolean(
-    selectedColor === null &&
+    selectedColor ===
+      DEFAULT_COLORS_LIST[DEFAULT_COLOR_INDEX.LIGHTEST_GREEN].colorName &&
+      selectedIconId === DEFAULT_ICONS_LIST[DEFAULT_ICONS_INDEX.BELL].id &&
       todoNameText?.length === 0 &&
       todoDescText?.length === 0,
   );

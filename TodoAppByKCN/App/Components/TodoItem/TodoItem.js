@@ -103,8 +103,7 @@ const TodoItem = item => {
         styles.todoImageAndTextContainerStyle,
         {
           backgroundColor: `${
-            DEFAULT_COLORS_LIST[DEFAULT_COLOR_INDEX[item.color]]?.color ??
-            '#333'
+            DEFAULT_COLORS_LIST[DEFAULT_COLOR_INDEX[item.color]]?.color
           }`,
           left: isCompleted ? 0 : -SWIPABLE_ITEM_WIDTH,
         },

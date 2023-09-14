@@ -26,9 +26,7 @@ const ColorPicker = ({defaultColors, selectedColor, onColorItemPress}) => {
 
   return (
     <View style={styles.colorPickerRootStyle}>
-      <Text style={styles.textStyle}>
-        {'Select a Color (Default is Dark Grey)'}
-      </Text>
+      <Text style={styles.textStyle}>{'Select a Color'}</Text>
       <View style={styles.colorPickerContainerStyle}>
         {colorsList.map(renderColorItem)}
       </View>

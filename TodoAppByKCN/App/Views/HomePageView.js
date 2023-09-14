@@ -1,9 +1,11 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
   useWindowDimensions,
 } from 'react-native';
@@ -17,14 +19,9 @@ import CreateComponent from '../Components/CreateComponent';
 import DarkAndLightModeToggle from '../Components/DarkAndLightModeToggle';
 import EditModal from '../Components/EditModal';
 import TodoItem from '../Components/TodoItem/TodoItem';
-import {TODO_LIST_STATUS_TYPE, todoInitList} from '../Constants/Constants';
+import {todoInitList} from '../Constants/Constants';
 import {getThemeMode} from '../Redux/themeMode/selectors';
-import {push} from '../Utils/NavigationUtils';
-import {
-  NAVIGATION_OPTIONS,
-  NAV_STYLES,
-  SCREEN_NAMES,
-} from '../Utils/NavigationUtils/NAV_CONSTANTS';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function HomePageView(props) {
   const bottomSheetRef = useRef(null);
@@ -35,9 +32,11 @@ function HomePageView(props) {
 
   const [completedTodoList, setCompletedTodoList] = useState([]);
 
-  const [showEditModal, setShowEditModal] = useState(false);
-
   const [editTodo, setEditTodo] = useState(null);
+
+  const [loadingData, setLoadingData] = useState(true);
+
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const themeMode = useSelector(getThemeMode);
 
@@ -55,28 +54,63 @@ function HomePageView(props) {
   //  This need not be run on each item change, as the updates themselves adjust
   //  to that change, in 'onCompleteButtonPressed' method.
   useEffect(() => {
-    let completedList = [];
-    let pendingList = [];
-
-    for (const todo of todoInitList) {
-      switch (todo.status) {
-        case TODO_LIST_STATUS_TYPE.IN_PROGRESS:
-          pendingList.push(todo);
-          break;
-        case TODO_LIST_STATUS_TYPE.COMPLETED:
-          completedList.push(todo);
-          break;
-      }
-    }
-    setCompletedTodoList(completedList);
-    setPendingTodoList(pendingList);
+    loadData();
   }, []);
+
+  const loadData = async () => {
+    try {
+      const value = await AsyncStorage.multiGet([
+        'completedList',
+        'pendingList',
+      ]);
+      if (value !== null) {
+        // value previously stored
+        const completedList = JSON.parse(value[0][1]);
+        const pendingList = JSON.parse(value[1][1]);
+
+        setPendingTodoList(pendingList);
+        setCompletedTodoList(completedList);
+      }
+    } catch (e) {
+      // loading error
+      console.error('Error while getting TODODATA: ', e);
+    }
+    setLoadingData(false);
+  };
+
+  const saveData = async ({completedList, pendingList}) => {
+    try {
+      let arrayToSet = [];
+      if (completedList) {
+        const completedListStringified = JSON.stringify(completedList);
+        arrayToSet.push(['completedList', completedListStringified]);
+      }
+      if (pendingList) {
+        const pendingListStringified = JSON.stringify(pendingList);
+        arrayToSet.push(['pendingList', pendingListStringified]);
+      }
+      const promiseData = await AsyncStorage.multiSet(arrayToSet);
+
+      console.log(
+        'JSON.stringify(promiseData, null, 2): ',
+        JSON.stringify(promiseData, null, 2),
+      );
+    } catch (e) {
+      console.error(
+        'Error during setting TodoData: ',
+        JSON.stringify(e, null, 2),
+      );
+    }
+  };
 
   const onDeleteTodoHandler = useCallback(
     todoId => {
       'worklet';
       const filteredList = pendingTodoList.filter(item => item.id !== todoId);
       runOnJS(setPendingTodoList)([...filteredList]);
+      runOnJS(saveData)({
+        pendingList: [...filteredList],
+      });
     },
     [pendingTodoList],
   );
@@ -95,12 +129,17 @@ function HomePageView(props) {
   const onTodoCompleteHandler = useCallback(
     todo => {
       completedTodoList.unshift(todo);
+      let pendingList = [...pendingTodoList].filter(
+        item => item.id !== todo.id,
+      );
       setTimeout(() => {
-        setPendingTodoList(
-          [...pendingTodoList].filter(item => item.id !== todo.id),
-        );
+        setPendingTodoList(pendingList);
         setCompletedTodoList(completedTodoList);
       }, 50);
+      saveData({
+        pendingList,
+        completedList: completedTodoList,
+      });
     },
     [completedTodoList, pendingTodoList],
   );
@@ -145,7 +184,9 @@ function HomePageView(props) {
 
   const addNewTodoCB = useCallback(
     newTodo => {
-      setPendingTodoList([...pendingTodoList, newTodo]);
+      const pendingList = [...pendingTodoList, newTodo];
+      setPendingTodoList(pendingList);
+      saveData({pendingList});
     },
     [pendingTodoList],
   );
@@ -165,6 +206,7 @@ function HomePageView(props) {
     newTodoList[replaceIndex] = todo;
 
     setPendingTodoList(newTodoList);
+    saveData({pendingList: newTodoList});
   };
 
   const renderCompletedList = () => {
@@ -189,56 +231,51 @@ function HomePageView(props) {
     );
   };
 
-  // TODO: Remove this method as well
-  const pushScreenToRandomPage = () => {
-    // TODO: This comment is what was there before
-    // push(
-    //   props.componentId,
-    //   SCREEN_NAMES.randomPage,
-    //   NAVIGATION_OPTIONS(NAV_STYLES.dark, 'Random Page Title', true, false),
-    //   {},
-    // );
-  };
-
   return (
     <GestureHandlerRootView style={styles.rootContainerStyle}>
       <SafeAreaView style={styles.rootContainerStyle}>
-        {/* TODO: Remove the TouchableOpacity below. It's just to see if navigation works as expected */}
-        {/* <TouchableOpacity
-          style={{height: 50, alignItems: 'center', justifyContent: 'center'}}
-          onPress={pushScreenToRandomPage}>
-          <Text>Go to Random Page</Text>
-        </TouchableOpacity> */}
         <View style={styles.toggleViewContainerStyle}>
           <DarkAndLightModeToggle />
         </View>
-        <View
-          style={[
-            styles.inProgressSectionContainerStyle,
-            {
-              ...(themeMode === 'dark'
-                ? {backgroundColor: '#111'}
-                : {backgroundColor: '#888'}),
-            },
-          ]}>
-          <Text style={styles.sectionHeaderTextStyle}>IN PROGRESS</Text>
-          {pendingTodoList.length !== 0 || completedTodoList.length !== 0 ? (
-            <FlatList
-              data={pendingTodoList}
-              getItemLayout={getItemLayout}
-              keyExtractor={flatListKE}
-              onEndReached={onFlatListEndReached}
-              onStartReached={onFlatListStartReached}
-              renderItem={renderTodoList}
-              ListFooterComponent={renderCompletedList}
+        {loadingData ? (
+          <View style={styles.loadingTextContainerStyle}>
+            <ActivityIndicator
+              color={'orange'}
+              size={'large'}
+              animating={loadingData}
             />
-          ) : (
-            <View style={styles.emptyTextStyle}>
-              <Text>Nothing in the TODO List!</Text>
-              <Text> Add more from the button below</Text>
-            </View>
-          )}
-        </View>
+            <Text style={styles.loadingTextStyle}>LOADING</Text>
+            <Text style={styles.loadingTextStyle}>Please wait!</Text>
+          </View>
+        ) : (
+          <View
+            style={[
+              styles.inProgressSectionContainerStyle,
+              {
+                ...(themeMode === 'dark'
+                  ? {backgroundColor: '#111'}
+                  : {backgroundColor: '#888'}),
+              },
+            ]}>
+            <Text style={styles.sectionHeaderTextStyle}>IN PROGRESS</Text>
+            {pendingTodoList.length !== 0 || completedTodoList.length !== 0 ? (
+              <FlatList
+                data={pendingTodoList}
+                getItemLayout={getItemLayout}
+                keyExtractor={flatListKE}
+                onEndReached={onFlatListEndReached}
+                onStartReached={onFlatListStartReached}
+                renderItem={renderTodoList}
+                ListFooterComponent={renderCompletedList}
+              />
+            ) : (
+              <View style={styles.emptyTextStyle}>
+                <Text>Nothing in the TODO List!</Text>
+                <Text> Add more from the button below</Text>
+              </View>
+            )}
+          </View>
+        )}
 
         <FAB onOpenCB={openBottomSheetHandler} />
         <BottomSheet
@@ -279,6 +316,17 @@ const styles = StyleSheet.create({
   inProgressSectionContainerStyle: {
     padding: 8,
     marginBottom: 72,
+  },
+
+  loadingTextContainerStyle: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  loadingTextStyle: {
+    fontSize: 20,
+    fontWeight: '700',
   },
 
   mainViewStyle: {
