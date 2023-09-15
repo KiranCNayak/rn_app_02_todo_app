@@ -66,9 +66,8 @@
 4. Dark and Light Mode
 
 <div style="display: flex;">
-<img src="./screenshots/darkMode.jpg" height="400" width="400" style="margin-right: 20;" />
-<!-- <div height="400" width="20"></div> -->
-<img src="./screenshots/lightMode.jpg" height="400" width="400" />
+<img src="./screenshots/darkMode.jpg" height="600" width="280" style="margin-right: 40;" />
+<img src="./screenshots/lightMode.jpg" height="600" width="280" />
 </div>
 
 ---
