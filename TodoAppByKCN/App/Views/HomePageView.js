@@ -257,7 +257,8 @@ function HomePageView(props) {
               },
             ]}>
             <Text style={styles.sectionHeaderTextStyle}>IN PROGRESS</Text>
-            {pendingTodoList.length !== 0 || completedTodoList.length !== 0 ? (
+            {(pendingTodoList && pendingTodoList.length !== 0) ||
+            (completedTodoList && completedTodoList.length !== 0) ? (
               <FlatList
                 data={pendingTodoList}
                 getItemLayout={getItemLayout}
