@@ -199,7 +199,7 @@ function HomePageView(props) {
         saveData({pendingList});
       } else {
         setPendingTodoList([newTodo]);
-        saveData({pendingList: newTodo});
+        saveData({pendingList: [newTodo]});
       }
     },
     [pendingTodoList],
