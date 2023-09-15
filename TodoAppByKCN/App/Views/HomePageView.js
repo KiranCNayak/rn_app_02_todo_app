@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
   useWindowDimensions,
 } from 'react-native';
@@ -88,18 +89,20 @@ function HomePageView(props) {
         const pendingListStringified = JSON.stringify(pendingList);
         arrayToSet.push(['pendingList', pendingListStringified]);
       }
-      const promiseData = await AsyncStorage.multiSet(arrayToSet);
-
-      console.log(
-        'JSON.stringify(promiseData, null, 2): ',
-        JSON.stringify(promiseData, null, 2),
-      );
+      await AsyncStorage.multiSet(arrayToSet);
     } catch (e) {
       console.error(
         'Error during setting TodoData: ',
         JSON.stringify(e, null, 2),
       );
     }
+  };
+
+  const onClearCompletedTodoListPressed = () => {
+    AsyncStorage.setItem('completedList', JSON.stringify([]), () => {
+      console.log('cleared');
+      loadData();
+    });
   };
 
   const onDeleteTodoHandler = useCallback(
@@ -127,17 +130,24 @@ function HomePageView(props) {
 
   const onTodoCompleteHandler = useCallback(
     todo => {
-      completedTodoList.unshift(todo);
-      let pendingList = [...pendingTodoList].filter(
-        item => item.id !== todo.id,
-      );
+      let completedList = [];
+      if (completedTodoList && completedTodoList.length > 0) {
+        completedList = [...completedTodoList] ?? [];
+        completedList.unshift(todo);
+      } else {
+        completedList = [todo];
+      }
+      let pendingList = [];
+      if (pendingTodoList && pendingTodoList.length > 0) {
+        pendingList = [...pendingTodoList].filter(item => item.id !== todo.id);
+      }
       setTimeout(() => {
         setPendingTodoList(pendingList);
-        setCompletedTodoList(completedTodoList);
+        setCompletedTodoList(completedList);
       }, 50);
       saveData({
         pendingList,
-        completedList: completedTodoList,
+        completedList,
       });
     },
     [completedTodoList, pendingTodoList],
@@ -183,9 +193,14 @@ function HomePageView(props) {
 
   const addNewTodoCB = useCallback(
     newTodo => {
-      const pendingList = [...pendingTodoList, newTodo];
-      setPendingTodoList(pendingList);
-      saveData({pendingList});
+      if (pendingTodoList && pendingTodoList.length > 0) {
+        const pendingList = [...pendingTodoList, newTodo];
+        setPendingTodoList(pendingList);
+        saveData({pendingList});
+      } else {
+        setPendingTodoList([newTodo]);
+        saveData({pendingList: newTodo});
+      }
     },
     [pendingTodoList],
   );
@@ -211,8 +226,17 @@ function HomePageView(props) {
   const renderCompletedList = () => {
     return (
       <View style={styles.completedSectionContainerStyle}>
-        <Text style={styles.sectionHeaderTextStyle}>COMPLETED</Text>
-        {completedTodoList.length !== 0 ? (
+        <View style={styles.completedHeaderAndTouchableStyle}>
+          <Text style={styles.sectionHeaderTextStyle}>COMPLETED</Text>
+          {completedTodoList && completedTodoList.length !== 0 && (
+            <TouchableOpacity
+              style={styles.clearAllTouchableStyle}
+              onPress={onClearCompletedTodoListPressed}>
+              <Text style={styles.sectionHeaderTextStyle}>CLEAR ALL</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        {completedTodoList && completedTodoList.length !== 0 ? (
           <FlatList
             data={completedTodoList}
             getItemLayout={getItemLayout}
@@ -302,6 +326,19 @@ function HomePageView(props) {
 }
 
 const styles = StyleSheet.create({
+  clearAllTouchableStyle: {
+    backgroundColor: '#777',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+
+  completedHeaderAndTouchableStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
   completedSectionContainerStyle: {
     backgroundColor: '#444444',
     padding: 8,
