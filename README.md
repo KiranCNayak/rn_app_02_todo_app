@@ -1,7 +1,5 @@
 # Todo App by KCN
 
-# Wallpaper App by KCN
-
 ### Mockup images
 
 <div style="display: flex;">
