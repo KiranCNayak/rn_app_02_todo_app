@@ -68,6 +68,22 @@ def enableProguardInReleaseBuilds = true
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+def getPassword(String currentUser, String keyChain) {
+    def stdout = new ByteArrayOutputStream()
+    def stderr = new ByteArrayOutputStream()
+    exec {
+        commandLine 'security', '-q', 'find-generic-password', '-a', currentUser, '-s', keyChain, '-w'
+        standardOutput = stdout
+        errorOutput = stderr
+        ignoreExitValue true
+    }
+    //noinspection GroovyAssignabilityCheck
+        stdout.toString().trim()
+}
+
+def RN_APP_02_TODO_APP_BY_KCN_UPLOAD_KEY_PASSWORD = getPassword('kcn','RN_APP_02_TODO_APP_BY_KCN_UPLOAD_KEY_PASSWORD')
+def RN_APP_02_TODO_APP_BY_KCN_UPLOAD_STORE_PASSWORD = getPassword('kcn','RN_APP_02_TODO_APP_BY_KCN_UPLOAD_STORE_PASSWORD')
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -87,6 +103,13 @@ android {
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
+        }
+        release {
+            if(project.hasProperty('RN_APP_02_TODO_APP_BY_KCN_UPLOAD_STORE_FILE'))
+            storeFile file(RN_APP_02_TODO_APP_BY_KCN_UPLOAD_STORE_FILE)
+            storePassword RN_APP_02_TODO_APP_BY_KCN_UPLOAD_STORE_PASSWORD
+            keyAlias RN_APP_02_TODO_APP_BY_KCN_UPLOAD_KEY_ALIAS
+            keyPassword RN_APP_02_TODO_APP_BY_KCN_UPLOAD_KEY_PASSWORD
         }
     }
     buildTypes {
