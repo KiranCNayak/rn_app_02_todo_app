@@ -1,79 +1,86 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Todo App by KCN
 
-# Getting Started
+# Wallpaper App by KCN
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+### Mockup images
 
-## Step 1: Start the Metro Server
+<div style="display: flex;">
+<img src="./screenshots/mockup-1 - First Page.png" height="400" width="400" />
+<img src="./screenshots/mockup-2 - Light and Dark Mode.png" height="400" width="400" />
+<img src="./screenshots/mockup-3 - In progress and Completed List.png" height="400" width="400" />
+</div>
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+### Features included in this app
 
-To start Metro, run the following command from the _root_ of your React Native project:
+- [React Native Navigation](https://wix.github.io/react-native-navigation/) for in-app navigation.
+- [React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/) for swipe animation.
+- [AsyncStorage](https://react-native-async-storage.github.io/async-storage/) to store persistent data, in key-value form.
+- [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/) for animations of Bottomsheet.
+- [Redux](https://redux.js.org/) with [React Redux](https://react-redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) for state management.
+- Utilizing memoization techniques using [`useCallback`](https://react.dev/reference/react/useCallback), [`useMemo`](https://react.dev/reference/react/useMemo) and [`React.memo`](https://react.dev/reference/react/memo).
 
-```bash
-# using npm
-npm start
+### Running the app in debug mode
 
-# OR using Yarn
-yarn start
-```
+1. Clone the repo
 
-## Step 2: Start your Application
+2. ```sh
+   yarn && yarn start
+   ```
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+3. Connect your Android device to your machine and make sure `Developer Options` is enabled.
 
-### For Android
+4. Also make sure you have `adb` installed. See a Youtube video on how to install it, if you don't know how to.
 
-```bash
-# using npm
-npm run android
+5. In another window of terminal, navigate to the root of the project and run
 
-# OR using Yarn
-yarn android
-```
+   ```sh
+   cd android && ./gradlew installDebug && cd ..
+   ```
 
-### For iOS
+6. After the app installs on your phone, run the below command to connect your app running on the phone to debugger on your terminal.
 
-```bash
-# using npm
-npm run ios
+   ```sh
+   adb reverse tcp:8081 tcp:8081
+   ```
 
-# OR using Yarn
-yarn ios
-```
+   > NOTE: This must be done each time you physically remove your phone's connection to your machine.
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+### Screenshots of the app
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+1. Home page
 
-## Step 3: Modifying your App
+<img src="./screenshots/firstScreen.jpg" height="600" width="280" />
 
-Now that you have successfully run the app, let's modify it.
+---
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+2. On pressing the Floating action Button (FAB) in the bottom, we see this modal entering from bottom.
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+<img src="./screenshots/addTodo.jpg" height="600" width="280" />
 
-## Congratulations! :tada:
+---
 
-You've successfully run and modified your React Native App. :partying_face:
+3. Edit and Delete flow in a GIF
 
-### Now what?
+<img src="./screenshots/editAndDeleteGif.gif" height="600" width="280" />
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+---
 
-# Troubleshooting
+4. Dark and Light Mode
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+<div style="display: flex;">
+<img src="./screenshots/darkMode.jpg" height="400" width="400" style="margin-right: 20;" />
+<!-- <div height="400" width="20"></div> -->
+<img src="./screenshots/lightMode.jpg" height="400" width="400" />
+</div>
 
-# Learn More
+---
 
-To learn more about React Native, take a look at the following resources:
+5. In progress items
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+<img src="./screenshots/inProgress.jpg" height="600" width="280" />
+
+---
+
+6. Partially completed items
+
+<img src="./screenshots/partiallyCompleted.jpg" height="600" width="280" />
